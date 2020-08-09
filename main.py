@@ -16,5 +16,11 @@ def extract_subs():
         # Otherwise it's a zipfile! 
         with zipfile.ZipFile('./{0}'.format(file), 'r') as subtitle_archive: 
             subtitle_archive.extractall("./extracted/{}".format(fn[0]))
-
+def handle_srt(): 
+    for subtitle in os.listdir('./extracted/stuff'):
+        print(subtitle)
+        with open('./extracted/stuff/'+subtitle, 'r') as f:
+            print(list(srt.parse(f)))
 extract_subs()
+handle_srt()
+
