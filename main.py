@@ -1,6 +1,7 @@
 import srt 
 import os 
 import zipfile
+import pysrt 
 """
 This module will deal with searching the kanji and maybe making the cards
 """
@@ -19,8 +20,9 @@ def extract_subs():
 def handle_srt(): 
     for subtitle in os.listdir('./extracted/stuff'):
         print(subtitle)
-        with open('./extracted/stuff/'+subtitle, 'r') as f:
-            print(list(srt.parse(f)))
+        subs = pysrt.open('./extracted/stuff/'+subtitle, encoding='utf-8-sig')
+        print(str(subs[0]).encode('utf-8-sig'))
+            
 extract_subs()
 handle_srt()
 
