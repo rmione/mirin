@@ -5,6 +5,7 @@ import json
 BASE_URL = "https://kanjiapi.dev/v1/kanji/"
 
 def search_kanji(kanji):
+    print(kanji)
     encoded = (BASE_URL+kanji).encode('utf-8') # This looks like b'https://kanjiapi.dev/v1/kanji/\xe5\xa0\x82' etc
     print(encoded)
     decoded = encoded.decode('utf-8')
@@ -15,7 +16,6 @@ def search_kanji(kanji):
         print("Unsuccessful error code {}".format(response.status_code))
     
     with open("./testing_response.json", 'w+') as f:
-        
         json.dump(response.json(), f)
 
 def test_encoding(): 
