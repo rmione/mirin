@@ -7,13 +7,13 @@ with open('./testing_response.json', 'r') as stream:
     1607392319,
     'Simple Model',
     fields=[
-    {'name': 'Question'},
-    {'name': 'Answer'},
+    {'name': 'Kanji'},
+    {'name': 'Meaning'},
     ],
     templates=[
     {
         'name': 'Card 1',
-        'qfmt': '<span class="kanji">{{Question}}</span>',
+        'qfmt': '<span class="kanji">{{Kanji}}</span>',
         'afmt': '{{Answer}}',
     } 
     ],
