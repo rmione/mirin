@@ -1,49 +1,29 @@
-import requests
-import json 
-from bs4 import BeautifulSoup
-from xml.dom import minidom
-import xmltodict 
-from selenium import webdriver
-from requests_html import HTMLSession
+import srt 
+import os 
+import zipfile
+import pysrt 
+import sys
 """
-For now we are going to use Romaji titles for the anime and search the database that we are going to use (for now, kitsuneko.)
-Kitsuneko uses a pretty simplistic URL structure so I think that this will be pretty simple to work with. Let's get going! 
+This module will deal with searching the kanji and maybe making the cards
 """
+print(sys.getdefaultencoding())
+def extract_subs(): 
+    for file in os.listdir(): 
+        if not os.path.isfile(file): 
+            continue 
 
-# headers = """GET /dirlist.php?dir=subtitles%2Fjapanese%2F07-Ghost%2F HTTP/2
-# Host: kitsunekko.net
-# User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0
-# Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
-# Accept-Language: en-US,en;q=0.5
-# Accept-Encoding: gzip, deflate, br
-# Referer: https://kitsunekko.net/dirlist.php?dir=subtitles%2Fjapanese
-# DNT: 1
-# Connection: keep-alive
-# Cookie: G_ENABLED_IDPS=google
-# Upgrade-Insecure-Requests: 1
-# Cache-Control: max-age=0
-# TE: Trailers
-#             """
-
-base_url = 'https://kitsunekko.net/dirlist.php?dir=subtitles\%2Fjapanese\%2FAjin+S2\%2F'
-headers = {'Host': 'kitsunekko.net',
-'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:79.0) Gecko/20100101 Firefox/79.0',
-'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-'Accept-Language': 'en-US,en;q=0.5',
-'Accept-Encoding': 'gzip, deflate, br',
-'DNT': '1',
-'Connection': 'keep-alive',
-'Referer': 'https://kitsunekko.net/dirlist.php?dir=subtitles\%2Fjapanese\%2F',
-'Cookie': 'G_ENABLED_IDPS=google',
-'Upgrade-Insecure-Requests': '1',
-'TE': 'Trailers'} 
-# cookies = {'G_ENABLED_IDPS': 'google'}
-# r = requests.get(base_url, headers=headers, params={'Scheme': 'https', 'Host': 'kitsunekko.net', 'Filename':'/dirlist.php'} )
-
-# soup  = BeautifulSoup(r.text, 'html.parser')
-# print(soup.prettify())
-
-session = HTMLSession()
-
-r = session.get(base_url, headers=headers) 
-print(r.html.render())
+        fn = file.split('.')
+        if not fn[1] in ['zip', 'rar']:
+            continue 
+    
+        # Otherwise it's a zipfile! 
+        with zipfile.ZipFile('./{0}'.format(file), 'r') as subtitle_archive: 
+            subtitle_archive.extractall("./extracted/{}".format(fn[0]))
+def handle_srt(): 
+    for subtitle in os.listdir('./extracted/stuff'):
+        print(subtitle)
+        subs = pysrt.open('./extracted/stuff/'+subtitle, encoding='utf-8-sig')
+        print(subs[0].text.encode('utf-8'))    
+# extract_subs()
+handle_srt()
+print(sys.stdout.encoding)
