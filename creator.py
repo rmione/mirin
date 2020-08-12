@@ -45,9 +45,9 @@ css= """      .card {
 
 )
 
- my_deck = genanki.Deck(
-    2059400110,
-    'Test Kanji')
+my_deck = genanki.Deck(
+2059400110,
+'Test Kanji')
 
 
 load_config()
