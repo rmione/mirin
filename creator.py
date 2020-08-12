@@ -4,24 +4,24 @@ import yaml
 import os
 import random 
 
-if not os.path.isfile('./config.yml'): 
-    MODEL_NO = random.randrange(1 << 30, 1 << 31)
-    DECK_NO = random.randrange(1 << 30, 1 << 31)
-    with open('./config.yml', 'w+') as stream: 
-        data = {
-            "model_number": MODEL_NO,
-            "deck_number": DECK_NO
-        }
-        yaml.safe_dump(data, stream)
-else: 
-    with open('./config.yml', 'r') as stream:
-        data = yaml.safe_load(stream)
-    MODEL_NO = data["model_number"]
-    DECK_NO = data["deck_number"]
+def load_config():
+    if not os.path.isfile('./config.yml'): 
+        MODEL_NO = random.randrange(1 << 30, 1 << 31)
+        DECK_NO = random.randrange(1 << 30, 1 << 31)
+        with open('./config.yml', 'w+') as stream: 
+            data = {
+                "model_number": MODEL_NO,
+                "deck_number": DECK_NO
+            }
+            yaml.safe_dump(data, stream)
+    else: 
+        with open('./config.yml', 'r') as stream:
+            data = yaml.safe_load(stream)
+        MODEL_NO = data["model_number"]
+        DECK_NO = data["deck_number"]
 
 
-
-
+load_config()
 with open('./testing_response.json', 'r') as stream: 
     data = json.load(stream)
     model = genanki.Model(
