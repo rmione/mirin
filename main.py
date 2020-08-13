@@ -20,10 +20,13 @@ def extract_subs():
         with zipfile.ZipFile('./{0}'.format(file), 'r') as subtitle_archive: 
             subtitle_archive.extractall("./extracted/{}".format(fn[0]))
 def handle_srt(): 
-    for subtitle in os.listdir('./extracted/stuff'):
-        print(subtitle)
-        subs = pysrt.open('./extracted/stuff/'+subtitle, encoding='utf-8-sig')
-        print(subs[0].text.encode('utf-8'))    
-# extract_subs()
+    for subdir in os.listdir('./extracted/'):
+        print(subdir)
+        for subtitle in os.listdir('./extracted/{}'.format(subdir)):
+            subs = pysrt.open('./extracted/{0}/{1}'.format(subdir, subtitle), encoding='utf-8-sig')
+            print(str(subs[0].text.encode('utf-8')))
+            with open('./testing.txt', 'w+') as f: 
+                f.write(subs[0].text.decode('utf-8'))
+extract_subs()
 handle_srt()
 print(sys.stdout.encoding)

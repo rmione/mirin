@@ -1,6 +1,8 @@
-# Unfamiliar Kanji from Anime
+# mirin みりん
 
-This is a command line tool that aids the user in doing the Mass Immersion Approach for the Japanese language. Specifically, it makes decks of SRS cards that will allow the user to learn some of the vocab and kanji used in the program that they are watching without subtitles and in Japanese (legally, of course)
+This is a command line tool that aids the user in doing the Mass Immersion Approach for the Japanese language by creating SRS Decks based on the kanji present in a given anime, movie, or drama. 
+
+Specifically, it makes decks of SRS cards that will allow the user to learn some of the vocab and kanji used in the program that they are watching without subtitles and in Japanese (legally, of course)
 
 ## To-dos:
 ### Basic Functionality
