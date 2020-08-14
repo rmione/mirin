@@ -1,5 +1,6 @@
 import requests
 import json 
+import re
 # -*- coding: utf-8 -*-
 
 BASE_URL = "https://kanjiapi.dev/v1/kanji/"
@@ -23,6 +24,21 @@ def test_encoding():
         data = json.load(f)
         search_kanji(data['kanji'])
 
+def is_kanji(kanji: str) -> bool: 
+    """
+    Args: 
+        kanji: this is the unencoded "kanji" character. 
+    Returns: 
+        True if it is within the unicode range of kanji
+        False if it is not. 
 
+    """
+    # regex = u"[\x3400-\x4DB5\x4E00-\x9FCB\xF900-\xFA6A]"
+
+    print(str(kanji.encode('utf-8')))
+    if re.match("([一-龯])", kanji):
+        return True
+    return False
 # search_kanji("物")
-test_encoding()
+# test_encoding()
+print(is_kanji("s"))
