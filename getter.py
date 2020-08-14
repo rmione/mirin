@@ -46,6 +46,6 @@ headers = {'Host': 'kitsunekko.net',
 session = HTMLSession()
 
 r = session.get(base_url, headers=headers) 
-bruh = r.html.find('#dirlist', first=True)
+bruh = r.html.find('dirlist', first=True)
 #print(r.html.render())
 print(bruh)

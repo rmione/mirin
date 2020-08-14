@@ -22,5 +22,7 @@ def test_encoding():
     with open("./testing_response.json", 'r') as f:
         data = json.load(f)
         search_kanji(data['kanji'])
+
+
 # search_kanji("物")
 test_encoding()

@@ -4,24 +4,24 @@ import yaml
 import os
 import random 
 
-def load_config():
-    if not os.path.isfile('./config.yml'): 
-        MODEL_NO = random.randrange(1 << 30, 1 << 31)
-        DECK_NO = random.randrange(1 << 30, 1 << 31)
-        with open('./config.yml', 'w+') as stream: 
-            data = {
-                "model_number": MODEL_NO,
-                "deck_number": DECK_NO
-            }
-            yaml.safe_dump(data, stream)
-    else: 
-        with open('./config.yml', 'r') as stream:
-            data = yaml.safe_load(stream)
-        MODEL_NO = data["model_number"]
-        DECK_NO = data["deck_number"]
 
+if not os.path.isfile('./config.yml'): 
+    MODEL_NO = random.randrange(1 << 30, 1 << 31)
+    DECK_NO = random.randrange(1 << 30, 1 << 31)
+    with open('./config.yml', 'w+') as stream: 
+        data = {
+            "model_number": MODEL_NO,
+            "deck_number": DECK_NO
+        }
+        yaml.safe_dump(data, stream)
+else: 
+    with open('./config.yml', 'r') as stream:
+        data = yaml.safe_load(stream)
+    MODEL_NO = data["model_number"]
+    DECK_NO = data["deck_number"]
+    
 model = genanki.Model(
-1607392319,
+MODEL_NO,
 'Simple Model',
 fields=[
 {'name': 'Kanji'},
@@ -46,11 +46,11 @@ css= """      .card {
 )
 
 my_deck = genanki.Deck(
-2059400110,
+DECK_NO,
 'Test Kanji')
 
 
-load_config()
+
 
 def add_card(deck, kanji):
 # with open('./testing_response.json', 'r') as stream: 
