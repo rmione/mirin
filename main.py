@@ -6,10 +6,9 @@ import sys
 import re
 import json
 import operator
+
 from mirin.search import Kanji
-"""
-This module will deal with searching the kanji and maybe making the cards
-"""
+
 print(sys.getdefaultencoding())
 def extract_subs(): 
     """
@@ -27,39 +26,49 @@ def extract_subs():
         # Otherwise it's a zipfile! 
         with zipfile.ZipFile('./{0}'.format(file), 'r') as subtitle_archive: 
             subtitle_archive.extractall("./extracted/{}".format(fn[0]))
+def make_database(subtitle_array): 
+    """
+    Args:
+        subtitle array: an array of subtitles(strings)
+    Goes through each if the subtitles' strings character by character, checks if they are kanji, and
+    if they are, adds them to the database.
+    I can see this being really slow considering it's a double for loop
+    
+    Returns:
+        sorted dictionary database of kanji
+    """
+    database = {}
+    # This is subtitle level
+    for sub in subtitle_array: 
+        # This is the sentence level
+        for char in sub.text:
+            if Kanji.is_kanji(char):
+                if not database.get(char):
+                    # Initialize database entry and zero count 
+                    database[char] = 0
+                database[char]+=1
+                # count +=1 
+    return {k: v for k, v in sorted(database.items(), key=lambda item: item[1])}
+
 def handle_srt(): 
     """
-    This function is tentative.
-    For not it opens the subtitle files and writes the first sub to a file. I'm just testing encoding and stuff with this, 
+    This does most of the legwork. 
+    Goes through the /extracted/ directory, and finds the media's subfolder.
+    Then it goes through each of the individual subtitle file's contents. 
+    It calls upon the make_database file and uses it to create databases for each "episode"
     """
     for subdir in os.listdir('./extracted/'):
         print(subdir)
         count = 0 
         for subtitle in os.listdir('./extracted/{}'.format(subdir)):
             subs = pysrt.open('./extracted/{0}/{1}'.format(subdir, subtitle), encoding='utf-8-sig')
-            # print(str(subs[0].text.encode('utf-8')))
-            # with open('./testing.txt', 'w+') as f: 
-            #     f.write(subs[0].text.decode('utf-8'))
-            print("Subtitle " + subtitle)
-           
-            database = {}
 
-            # This is subtitle level
-            for sub in subs: 
-                arr = sub.text
-                # This is the sentence level
-                for char in arr:
-                    if Kanji.is_kanji(char):
-                        if not database.get(char):
-                            # Initialize database entry and zero count 
-                            database[char] = 0
-                        database[char]+=1
-                        # count +=1 
-            x = {k: v for k, v in sorted(database.items(), key=lambda item: item[1])}
-            with open('./kanji{}.json'.format(count), 'w+', encoding='utf8') as f: 
-                json.dump(x, f, ensure_ascii=False)
+            print("Subtitle " + subtitle)
+            sorted_database = make_database(subs)
+
+            with open('./{}.json'.format(subtitle), 'w+', encoding='utf8') as f: 
+                json.dump(sorted_database, f, ensure_ascii=False)
             count += 1
-            # print(database)
 extract_subs()
 handle_srt()
 print(sys.stdout.encoding)
