@@ -3,6 +3,7 @@ import os
 import zipfile
 import pysrt 
 import sys
+import re
 """
 This module will deal with searching the kanji and maybe making the cards
 """
@@ -32,9 +33,23 @@ def handle_srt():
         print(subdir)
         for subtitle in os.listdir('./extracted/{}'.format(subdir)):
             subs = pysrt.open('./extracted/{0}/{1}'.format(subdir, subtitle), encoding='utf-8-sig')
-            print(str(subs[0].text.encode('utf-8')))
-            with open('./testing.txt', 'w+') as f: 
-                f.write(subs[0].text.decode('utf-8'))
+            # print(str(subs[0].text.encode('utf-8')))
+            # with open('./testing.txt', 'w+') as f: 
+            #     f.write(subs[0].text.decode('utf-8'))
+            for sub in subs: 
+                print(sub.text)
+                # print(str(sub) +"test")
+                # if re.search(r"\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3} ", sub.text): 
+                #     # This is a timecode line
+                #     print("Timecode line")
+                # elif re.match(r"\d+", str(sub)):
+                #     # This is a number line 
+                #     print("Number line")
+                # else: 
+                #     # should be japanese but figure out some sort of logic for this
+                #     print("Japanese")
+
+                
 extract_subs()
 handle_srt()
 print(sys.stdout.encoding)
