@@ -42,4 +42,4 @@ class Kanji:
         return False
 # search_kanji("物")
 # test_encoding()
-print(is_kanji("s"))
+print(Kanji.is_kanji("s"))
