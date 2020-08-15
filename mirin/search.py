@@ -23,7 +23,7 @@ class Kanji:
     def test_encoding(): 
         with open("./testing_response.json", 'r') as f:
             data = json.load(f)
-            search_kanji(data['kanji'])
+            Kanji.search_kanji(data['kanji'])
     @classmethod
     def is_kanji(kanji: str) -> bool: 
         """
@@ -42,4 +42,4 @@ class Kanji:
         return False
 # search_kanji("物")
 # test_encoding()
-print(is_kanji("s"))
+print(Kanji.is_kanji("s"))
