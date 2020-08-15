@@ -4,6 +4,7 @@ import zipfile
 import pysrt 
 import sys
 import re
+from mirin.search import Kanji
 """
 This module will deal with searching the kanji and maybe making the cards
 """
@@ -37,18 +38,8 @@ def handle_srt():
             # with open('./testing.txt', 'w+') as f: 
             #     f.write(subs[0].text.decode('utf-8'))
             for sub in subs: 
-                print(sub.text)
-                # print(str(sub) +"test")
-                # if re.search(r"\d{2}:\d{2}:\d{2},\d{3} --> \d{2}:\d{2}:\d{2},\d{3} ", sub.text): 
-                #     # This is a timecode line
-                #     print("Timecode line")
-                # elif re.match(r"\d+", str(sub)):
-                #     # This is a number line 
-                #     print("Number line")
-                # else: 
-                #     # should be japanese but figure out some sort of logic for this
-                #     print("Japanese")
-
+                arr = sub.text[0]
+                print(Kanji.is_kanji(arr))
                 
 extract_subs()
 handle_srt()

@@ -6,7 +6,7 @@ import re
 BASE_URL = "https://kanjiapi.dev/v1/kanji/"
 class Kanji: 
     @classmethod
-    def search_kanji(kanji):
+    def search_kanji(cls, kanji):
         print(kanji)
         encoded = (BASE_URL+kanji).encode('utf-8') # This looks like b'https://kanjiapi.dev/v1/kanji/\xe5\xa0\x82' etc
         print(encoded)
@@ -25,7 +25,7 @@ class Kanji:
             data = json.load(f)
             Kanji.search_kanji(data['kanji'])
     @classmethod
-    def is_kanji(kanji: str) -> bool: 
+    def is_kanji(cls, kanji: str) -> bool: 
         """
         Args: 
             kanji: this is the unencoded "kanji" character. 
@@ -42,4 +42,3 @@ class Kanji:
         return False
 # search_kanji("物")
 # test_encoding()
-print(Kanji.is_kanji("s"))
