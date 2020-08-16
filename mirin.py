@@ -13,23 +13,8 @@ import time
 from dashi.search import Kanji
 from dashi.creator import add_card, DECK_NO, MODEL
 DATABASE_PATH = './databases'
-print(sys.getdefaultencoding())
-def extract_subs(): 
-    """
-    Goes through the root directory, and does some logic to figure out whether or not something is subtitle archive.
-    If it is, it extracts it to its own subdirectory within the /extracted/ directory.
-    """
-    for file in os.listdir(): 
-        if not os.path.isfile(file): 
-            continue 
 
-        fn = file.split('.')
-        if not fn[1] in ['zip', 'rar']:
-            continue 
-    
-        # Otherwise it's a zipfile! 
-        with zipfile.ZipFile('./{0}'.format(file), 'r') as subtitle_archive: 
-            subtitle_archive.extractall("./extracted/{}".format(fn[0]))
+
 def make_database(subtitle_array): 
     """
     Args:
@@ -75,23 +60,44 @@ def handle_srt():
             with open(current_db_path + "{}.json".format(subtitle), 'w+', encoding='utf8') as f: 
                 json.dump(sorted_database, f, ensure_ascii=False)
             count += 1
-extract_subs()
-handle_srt()
-print(sys.stdout.encoding) 
 
-@click.command(name='mirin')
+
+def extract_subs(extract): 
+    print("brreh")
+    """
+    Goes through the root directory, and does some logic to figure out whether or not something is subtitle archive.
+    If it is, it extracts it to its own subdirectory within the /extracted/ directory.
+    """
+    for file in os.listdir(): 
+        if not os.path.isfile(file): 
+            continue 
+
+        fn = file.split('.')
+        if not fn[1] in ['zip', 'rar']:
+            continue 
+    
+        # Otherwise it's a zipfile! 
+        with zipfile.ZipFile('./{0}'.format(file), 'r') as subtitle_archive: 
+            subtitle_archive.extractall("./extracted/{}".format(fn[0]))
+
+
+@click.group(invoke_without_command=True)
 @click.option('--path', required=True, type=click.Path(exists=True), help='Path to the database for the desired media in this format: ./databases/media/')
 @click.option('--threshold', type=int, default=100, show_default=True, help='Lower bound of usage threshold for a kanji to be included in the SRS deck.')
-def mirin(path, threshold): 
+@click.option('--extract', type=bool, default=False, show_default=True, help='If True, all zip files in the root directory will be extracted into the /extracted/ directory. Set it to True for the first time.')
+def mirin(path, threshold, extract): 
     """ 
     this function is the main cli call. 
 
 
     """
-    print("bruh")
+    if extract: 
+        extract_subs()
+    
+
     for filename in os.listdir(path):
         # Individual deck level
-        deck = genanki.Deck(DECK_NO, 'bruh')
+        deck = genanki.Deck(DECK_NO, '')
         print(filename)
         
     
@@ -105,22 +111,31 @@ def mirin(path, threshold):
                     r = Kanji.search_kanji(kanji)
                     
                     meanings = ', '.join(r["meanings"])
-                    time.sleep(2)
+                    on_readings = ', '.join(r["on_readings"])
+                    kun_readings = ', '.join(r["kun_readings"])
+                    
+                    time.sleep(2) # Waiting 2 seconds is probably fine and permissable
+                    base = """
+                    on reading(s): {0}
+                    kun readings: {1}
+                    meaning(s): {2}
+                    """.format(on_readings, kun_readings, meanings)
+                    print(base)
                     my_note = genanki.Note(
                         model=MODEL,
-                        fields=[kanji, meanings])
+                        fields=[kanji, base])
 
                 
                     deck.add_note(my_note)
-                    if not os.path.isdir('./decks/'):
-                        os.mkdir('./decks/')
-                    genanki.Package(deck).write_to_file("./{0}{1}.apkg".format(filename, count))
+                    
                 else: 
                      continue 
-            # "./decks/{}.akpg".format(filename.split('.')[0]))          
-                count +=1
+        count +=1       
+        if not os.path.isdir('./decks/'):
+            os.mkdir('./decks/')
+        genanki.Package(deck).write_to_file("./{0}{1}.apkg".format(filename, count))
 
-    
     
 if __name__ == "__main__":
     mirin()
+    extract_subs()
