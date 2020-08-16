@@ -94,7 +94,6 @@ def mirin(path, threshold, extract):
     if extract: 
         extract_subs()
     
-
     for filename in os.listdir(path):
         # Individual deck level
         deck = genanki.Deck(DECK_NO, '')
