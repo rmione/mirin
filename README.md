@@ -3,7 +3,7 @@ __Note:__ __This project uses the [genanki](https://github.com/kerrickstaley/gen
 
 _mirin_ is a command line tool that aids the user in doing the [Mass Immersion Approach for the Japanese language](https://massimmersionapproach.com/) by creating SRS Decks based on the kanji present in a given anime, movie, or drama. 
 
-Specifically, it makes decks of SRS cards that will allow the user to learn some of the vocab and kanji used in the program that they are watching without subtitles and in Japanese.s
+Specifically, it makes decks of SRS cards that will allow the user to learn some of the vocab and kanji used in the program that they are watching without subtitles and in Japanese.
 
 ## Usage
  
@@ -13,7 +13,8 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
     mirin.py --extract --path '/extracted/media_path/'--threshold 90
 ```
 
-3. 
+3. Wait for the process to be complete.
+4. Navigate 
 
 ### To-dos: 
 - add a flag for the N5-N1 kanji jlpt specification
