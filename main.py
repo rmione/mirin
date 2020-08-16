@@ -6,9 +6,13 @@ import sys
 import re
 import json
 import operator
+import click
+import genanki 
+import time
 
-from mirin.search import Kanji
-
+from dashi.search import Kanji
+from dashi.creator import add_card, DECK_NO, MODEL
+DATABASE_PATH = './databases'
 print(sys.getdefaultencoding())
 def extract_subs(): 
     """
@@ -57,18 +61,66 @@ def handle_srt():
     Then it goes through each of the individual subtitle file's contents. 
     It calls upon the make_database file and uses it to create databases for each "episode"
     """
-    for subdir in os.listdir('./extracted/'):
-        print(subdir)
+    for subtitle_directory in os.listdir('./extracted/'):
+        print(subtitle_directory)
         count = 0 
-        for subtitle in os.listdir('./extracted/{}'.format(subdir)):
-            subs = pysrt.open('./extracted/{0}/{1}'.format(subdir, subtitle), encoding='utf-8-sig')
+        for subtitle in os.listdir('./extracted/{}'.format(subtitle_directory)):
+            subs = pysrt.open('./extracted/{0}/{1}'.format(subtitle_directory, subtitle), encoding='utf-8-sig')
 
-            print("Subtitle " + subtitle)
             sorted_database = make_database(subs)
-
-            with open('./{}.json'.format(subtitle), 'w+', encoding='utf8') as f: 
+            current_db_path = "{0}/{1}/".format(DATABASE_PATH, subtitle_directory)
+            if not os.path.isdir(current_db_path):
+                os.mkdir(DATABASE_PATH)
+                os.mkdir(current_db_path)
+            with open(current_db_path + "{}.json".format(subtitle), 'w+', encoding='utf8') as f: 
                 json.dump(sorted_database, f, ensure_ascii=False)
             count += 1
 extract_subs()
 handle_srt()
-print(sys.stdout.encoding)
+print(sys.stdout.encoding) 
+
+@click.command(name='mirin')
+@click.option('--path', required=True, type=click.Path(exists=True), help='Path to the database for the desired media in this format: ./databases/media/')
+@click.option('--threshold', type=int, default=100, show_default=True, help='Lower bound of usage threshold for a kanji to be included in the SRS deck.')
+def mirin(path, threshold): 
+    """ 
+    this function is the main cli call. 
+
+
+    """
+    print("bruh")
+    for filename in os.listdir(path):
+        # Individual deck level
+        deck = genanki.Deck(DECK_NO, 'bruh')
+        print(filename)
+        
+    
+        with open(path+filename, 'r', encoding='utf-8') as file: 
+            count = 0
+            kanji_database = json.load(file)
+            for kanji, frequency in kanji_database.items():
+            
+                
+                if frequency >= threshold: 
+                    r = Kanji.search_kanji(kanji)
+                    
+                    meanings = ', '.join(r["meanings"])
+                    time.sleep(2)
+                    my_note = genanki.Note(
+                        model=MODEL,
+                        fields=[kanji, meanings])
+
+                
+                    deck.add_note(my_note)
+                    if not os.path.isdir('./decks/'):
+                        os.mkdir('./decks/')
+                    genanki.Package(deck).write_to_file("./{0}{1}.apkg".format(filename, count))
+                else: 
+                     continue 
+            # "./decks/{}.akpg".format(filename.split('.')[0]))          
+                count +=1
+
+    
+    
+if __name__ == "__main__":
+    mirin()
