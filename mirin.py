@@ -81,7 +81,9 @@ def extract_subs(extract):
             subtitle_archive.extractall("./extracted/{}".format(fn[0]))
 
 def add_card_helper(data, deck, kanji): 
-    
+    meanings = ""
+    on_readings = ""
+    kun_readings = ""
     meanings = ', '.join(data["meanings"])
     on_readings = ', '.join(data["on_readings"])
     kun_readings = ', '.join(data["kun_readings"])
@@ -92,7 +94,7 @@ def add_card_helper(data, deck, kanji):
     kun readings: {1}
     meaning(s): {2}
     """.format(on_readings, kun_readings, meanings)
-    print(base)
+    
     my_note = genanki.Note(
         model=MODEL,
         fields=[kanji, base])
@@ -133,11 +135,12 @@ def mirin(path, threshold, extract, jlpt):
                     
                     r = Kanji.search_kanji(kanji)
                     if int(r.get('jlpt')) <= jlpt:
-                    
+                        print("jlpt level passes")
                     # So in this case, the JLPT flag isn't None, and it is above the threshold and it's below the upper bound of JLPT.
                         add_card_helper(r, deck, kanji)
                         continue
                     else: 
+                        print("jlpt level doesnt pass")
                         continue
 
                     # in this case the JLPT level is None, so just add as normal since it's above the treshold.
@@ -150,7 +153,7 @@ def mirin(path, threshold, extract, jlpt):
         count +=1       
         if not os.path.isdir('./decks/'):
             os.mkdir('./decks/')
-        genanki.Package(deck).write_to_file("./{0}{1}.apkg".format(filename, count))
+        genanki.Package(deck).write_to_file("./decks/{0}_Deck{1}.apkg".format(filename, count))
 
     
 if __name__ == "__main__":

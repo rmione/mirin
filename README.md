@@ -7,7 +7,7 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
 
 ## Usage
  
-1. Place the .srt archives of the show, anime, drama or movie that you want to make an SRS deck based off of into the root directory. 
+1. Place the compressed subtitle archives of the show, anime, drama or movie that you want to make an SRS deck based off of into the root directory. 
 2. 
 ```bash
     mirin.py --extract --path '/extracted/media_path/'--threshold 90
