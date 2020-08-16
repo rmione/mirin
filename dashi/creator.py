@@ -4,6 +4,7 @@ import yaml
 import os
 import random 
 
+# from dashi.search import Kanji
 
 if not os.path.isfile('./config.yml'): 
     MODEL_NO = random.randrange(1 << 30, 1 << 31)
@@ -20,7 +21,7 @@ else:
     MODEL_NO = data["model_number"]
     DECK_NO = data["deck_number"]
     
-model = genanki.Model(
+MODEL = genanki.Model(
 MODEL_NO,
 'Simple Model',
 fields=[
@@ -31,7 +32,7 @@ templates=[
 {
     'name': 'Card 1',
     'qfmt': '<span class="kanji">{{Kanji}}</span>',
-    'afmt': '{{Answer}}',
+    'afmt': '{{Meaning}}',
 } 
 ],
 css= """      .card {
@@ -45,25 +46,16 @@ css= """      .card {
 
 )
 
-my_deck = genanki.Deck(
-DECK_NO,
-'Test Kanji')
 
 
 
-
-def add_card(deck, kanji):
-# with open('./testing_response.json', 'r') as stream: 
-    # data = json.load(stream)
-
-    # my_note = genanki.Note(
-    #     model=model,
-    #     fields=[data["kanji"], 'Testing'])
+def add_card(deck, kanji, meaning):
 
     my_note = genanki.Note(
         model=model,
-        fields=[kanji, 'Testing'])
+        fields=[kanji, meaning])
 
    
-    my_deck.add_note(my_note)
-    genanki.Package(my_deck).write_to_file('testKanji.apkg')
+    deck.add_note(my_note)
+def dump_deck(deck): 
+    genanki.Package(deck).write_to_file('testKanji.apkg')
