@@ -14,10 +14,9 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
 ```
 
 3. Wait for the process to be complete.
-4. Navigate 
+4. Navigate to the /decks/ directory and see your SRS decks made to your specification.
 
 ### To-dos: 
 - add a flag for the N5-N1 kanji jlpt specification
   - Therefore I'll have to add more data to the databases when they are made. 
   - Also some more logic for dealing with this new data.
-- 
