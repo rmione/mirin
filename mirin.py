@@ -19,12 +19,13 @@ def make_database(subtitle_array):
     """
     Args:
         subtitle array: an array of subtitles(strings)
-    Goes through each if the subtitles' strings character by character, checks if they are kanji, and
-    if they are, adds them to the database.
-    I can see this being really slow considering it's a double for loop
+    
     
     Returns:
         sorted dictionary database of kanji
+        Goes through each if the subtitles' strings character by character, checks if they are kanji, and
+        if they are, adds them to the database.
+        I can see this being really slow considering it's a double for loop
     """
     database = {}
     # This is subtitle level
@@ -41,10 +42,14 @@ def make_database(subtitle_array):
 
 def handle_srt(): 
     """
-    This does most of the legwork. 
-    Goes through the /extracted/ directory, and finds the media's subfolder.
-    Then it goes through each of the individual subtitle file's contents. 
-    It calls upon the make_database file and uses it to create databases for each "episode"
+    Args: 
+        None
+    Returns:
+        None
+        This does most of the legwork. 
+        Goes through the /extracted/ directory, and finds the media's subfolder.
+        Then it goes through each of the individual subtitle file's contents. 
+        It calls upon the make_database file and uses it to create databases for each "episode"
     """
     for subtitle_directory in os.listdir('./extracted/'):
         print(subtitle_directory)
@@ -63,10 +68,14 @@ def handle_srt():
 
 
 def extract_subs(extract): 
-    print("brreh")
+    
     """
-    Goes through the root directory, and does some logic to figure out whether or not something is subtitle archive.
-    If it is, it extracts it to its own subdirectory within the /extracted/ directory.
+    Args: 
+        None
+    Returns: 
+        None
+        Goes through the root directory, and does some logic to figure out whether or not something is subtitle archive.
+        If it is, it extracts it to its own subdirectory within the /extracted/ directory.
     """
     for file in os.listdir(): 
         if not os.path.isfile(file): 
@@ -110,8 +119,27 @@ def add_card_helper(data, deck, kanji):
 def mirin(path, threshold, extract, jlpt): 
     """ 
     this function is the main cli call. 
+    Args:
+        path: database path
+        threshold: lower bound on the usage thresholdfor a kanji to be included. 
+        extract: boolean flag 
+        jlpt: string denoting the JLPT limit (inclusive)
+    Click command arguments: 
+    Options:
+        --path PATH          Path to the database for the desired media in this
+                            format: ./databases/media/  [required]
 
+        --threshold INTEGER  Lower bound of usage threshold for a kanji to be
+                            included in the SRS deck.  [default: 100]
 
+        --extract BOOLEAN    If True, all zip files in the root directory will be
+                            extracted into the /extracted/ directory. Set it to
+                            True for the first time.  [default: False]
+
+        --jlpt TEXT          Only add kanji which are part of this JLPT level or
+                            lower. Case insensitive. I.e: N5, N4, N3...
+
+        --help               Show this message and exit.
     """
     if jlpt is not None:
         

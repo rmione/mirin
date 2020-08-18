@@ -5,6 +5,7 @@ _mirin_ is a command line tool built with [Click](https://github.com/pallets/cli
 
 Specifically, it makes decks of SRS cards that will allow the user to learn some of the vocab and kanji used in the program that they are watching without subtitles and in Japanese.
 
+*Note: I will be continually trying to improve this and make it more robust as far as useful stats to make your decks by, and other features*
 ## Usage
  
 1. Place the compressed subtitle archives of the show, anime, drama or movie that you want to make an SRS deck based off of into the root directory. 
