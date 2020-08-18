@@ -19,12 +19,13 @@ def make_database(subtitle_array):
     """
     Args:
         subtitle array: an array of subtitles(strings)
-    Goes through each if the subtitles' strings character by character, checks if they are kanji, and
-    if they are, adds them to the database.
-    I can see this being really slow considering it's a double for loop
+    
     
     Returns:
         sorted dictionary database of kanji
+        Goes through each if the subtitles' strings character by character, checks if they are kanji, and
+        if they are, adds them to the database.
+        I can see this being really slow considering it's a double for loop
     """
     database = {}
     # This is subtitle level
@@ -41,10 +42,14 @@ def make_database(subtitle_array):
 
 def handle_srt(): 
     """
-    This does most of the legwork. 
-    Goes through the /extracted/ directory, and finds the media's subfolder.
-    Then it goes through each of the individual subtitle file's contents. 
-    It calls upon the make_database file and uses it to create databases for each "episode"
+    Args: 
+        None
+    Returns:
+        None
+        This does most of the legwork. 
+        Goes through the /extracted/ directory, and finds the media's subfolder.
+        Then it goes through each of the individual subtitle file's contents. 
+        It calls upon the make_database file and uses it to create databases for each "episode"
     """
     for subtitle_directory in os.listdir('./extracted/'):
         print(subtitle_directory)
@@ -63,10 +68,14 @@ def handle_srt():
 
 
 def extract_subs(extract): 
-    print("brreh")
+    
     """
-    Goes through the root directory, and does some logic to figure out whether or not something is subtitle archive.
-    If it is, it extracts it to its own subdirectory within the /extracted/ directory.
+    Args: 
+        None
+    Returns: 
+        None
+        Goes through the root directory, and does some logic to figure out whether or not something is subtitle archive.
+        If it is, it extracts it to its own subdirectory within the /extracted/ directory.
     """
     for file in os.listdir(): 
         if not os.path.isfile(file): 
@@ -80,17 +89,63 @@ def extract_subs(extract):
         with zipfile.ZipFile('./{0}'.format(file), 'r') as subtitle_archive: 
             subtitle_archive.extractall("./extracted/{}".format(fn[0]))
 
+def add_card_helper(data, deck, kanji): 
+    meanings = ""
+    on_readings = ""
+    kun_readings = ""
+    meanings = ', '.join(data["meanings"])
+    on_readings = ', '.join(data["on_readings"])
+    kun_readings = ', '.join(data["kun_readings"])
+    
+    time.sleep(2) # Waiting 2 seconds is probably fine and permissable
+    base = """
+    on reading(s): {0}
+    kun readings: {1}
+    meaning(s): {2}
+    """.format(on_readings, kun_readings, meanings)
+    
+    my_note = genanki.Note(
+        model=MODEL,
+        fields=[kanji, base])
+
+
+    deck.add_note(my_note)
 
 @click.group(invoke_without_command=True)
 @click.option('--path', required=True, type=click.Path(exists=True), help='Path to the database for the desired media in this format: ./databases/media/')
 @click.option('--threshold', type=int, default=100, show_default=True, help='Lower bound of usage threshold for a kanji to be included in the SRS deck.')
 @click.option('--extract', type=bool, default=False, show_default=True, help='If True, all zip files in the root directory will be extracted into the /extracted/ directory. Set it to True for the first time.')
-def mirin(path, threshold, extract): 
+@click.option('--jlpt', type=str, default=None, help='Only add kanji which are part of this JLPT level or lower. Case insensitive. I.e: N5, N4, N3...')
+def mirin(path, threshold, extract, jlpt): 
     """ 
     this function is the main cli call. 
+    Args:
+        path: database path
+        threshold: lower bound on the usage thresholdfor a kanji to be included. 
+        extract: boolean flag 
+        jlpt: string denoting the JLPT limit (inclusive)
+    Click command arguments: 
+    Options:
+        --path PATH          Path to the database for the desired media in this
+                            format: ./databases/media/  [required]
 
+        --threshold INTEGER  Lower bound of usage threshold for a kanji to be
+                            included in the SRS deck.  [default: 100]
 
+        --extract BOOLEAN    If True, all zip files in the root directory will be
+                            extracted into the /extracted/ directory. Set it to
+                            True for the first time.  [default: False]
+
+        --jlpt TEXT          Only add kanji which are part of this JLPT level or
+                            lower. Case insensitive. I.e: N5, N4, N3...
+
+        --help               Show this message and exit.
     """
+    if jlpt is not None:
+        
+        if not re.search("^n[1-5]$", jlpt.lower()): 
+            raise SystemExit("Improper input for --jlpt flag: {}".format(jlpt))
+        jlpt = int(jlpt[1]) # grab the integer level
     if extract: 
         extract_subs()
     
@@ -99,40 +154,34 @@ def mirin(path, threshold, extract):
         deck = genanki.Deck(DECK_NO, '')
         print(filename)
         
-    
+        print(jlpt)
         with open(path+filename, 'r', encoding='utf-8') as file: 
             count = 0
             kanji_database = json.load(file)
             for kanji, frequency in kanji_database.items():
-            
-                
-                if frequency >= threshold: 
+                if (jlpt is not None) and frequency >= threshold: 
+                    
                     r = Kanji.search_kanji(kanji)
-                    
-                    meanings = ', '.join(r["meanings"])
-                    on_readings = ', '.join(r["on_readings"])
-                    kun_readings = ', '.join(r["kun_readings"])
-                    
-                    time.sleep(2) # Waiting 2 seconds is probably fine and permissable
-                    base = """
-                    on reading(s): {0}
-                    kun readings: {1}
-                    meaning(s): {2}
-                    """.format(on_readings, kun_readings, meanings)
-                    print(base)
-                    my_note = genanki.Note(
-                        model=MODEL,
-                        fields=[kanji, base])
+                    if int(r.get('jlpt')) <= jlpt:
+                        print("jlpt level passes")
+                    # So in this case, the JLPT flag isn't None, and it is above the threshold and it's below the upper bound of JLPT.
+                        add_card_helper(r, deck, kanji)
+                        continue
+                    else: 
+                        print("jlpt level doesnt pass")
+                        continue
 
-                
-                    deck.add_note(my_note)
-                    
+                    # in this case the JLPT level is None, so just add as normal since it's above the treshold.
+                elif frequency >= threshold:
+                    r = Kanji.search_kanji(kanji)
+                    add_card_helper(r, deck, kanji)
                 else: 
+                    # Doesn't qualify by any criteria
                      continue 
         count +=1       
         if not os.path.isdir('./decks/'):
             os.mkdir('./decks/')
-        genanki.Package(deck).write_to_file("./{0}{1}.apkg".format(filename, count))
+        genanki.Package(deck).write_to_file("./decks/{0}_Deck{1}.apkg".format(filename, count))
 
     
 if __name__ == "__main__":
