@@ -1,0 +1,12 @@
+cached-property==1.5.1
+certifi==2020.6.20
+chardet==3.0.4
+click==7.1.2
+frozendict==1.2
+genanki==0.8.0
+idna==2.10
+pysrt==1.1.2
+pystache==0.5.4
+PyYAML==5.3.1
+requests==2.24.0
+urllib3==1.25.10

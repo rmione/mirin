@@ -1,4 +1,3 @@
-import srt 
 import os 
 import zipfile
 import pysrt 
