@@ -22,7 +22,7 @@ fh = logging.FileHandler('mirin.log')
 fh.setLevel(logging.DEBUG)
 fh.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
 DATABASE_PATH = './databases'
-print("Deckno " + str(DECK_NO))
+logger.info("Deck Number " + str(DECK_NO))
 class Deck(Deck):
     def __init__(self, deck_id=None, name=None, description='', jlpt_level=None): 
         super().__init__(deck_id=deck_id, name=name, description=description)
@@ -90,6 +90,7 @@ def handle_srt():
         Then it goes through each of the individual subtitle file's contents. 
         It calls upon the make_database file and uses it to create databases for each "episode"
     """
+    
     for subtitle_directory in os.listdir('./extracted/'):
         logging.info(subtitle_directory)
         count = 0 
@@ -187,8 +188,8 @@ def mirin(path, threshold, extract, jlpt):
                     r = Kanji.search_kanji(kanji)
                     if int(r.get('jlpt')) <= jlpt:
                         logger.info("JLPT level is within the treshold.")
-                    # So in this case, the JLPT flag isn't None, and it is above the threshold and it's below the upper bound of JLPT.
-                        deck.add_card_helper(Kanji.search_kanji(kanji))
+                        # So in this case, the JLPT flag isn't None, and it is above the threshold and it's below the upper bound of JLPT.
+                        deck.add_card_helper(r)
                         continue
                     else: 
                         logger.info("JLPT level is NOT within the treshold.")
