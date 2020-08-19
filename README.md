@@ -14,6 +14,7 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
     python mirin.py --extract --path '/extracted/media_path/'--threshold 90
 ```
 *Note: for more info please check out the docs as well as running python mirin.py --help* 
+
 3. Wait for the process to be complete.
 4. Navigate to the /decks/ directory and see your SRS decks made to your specification.
 
