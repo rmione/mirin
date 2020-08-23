@@ -9,7 +9,6 @@ import click
 import genanki 
 import time
 import logging
-import webvtt
 import pysubs2
 import rarfile
 from genanki.deck import Deck
@@ -109,21 +108,7 @@ def handle_srt():
             with open(current_db_path + "{}.json".format(subtitle), 'w+', encoding='utf8') as f: 
                 json.dump(sorted_database, f, ensure_ascii=False)
             count += 1
-def handle_webvtt(): 
-    for subtitle_directory in os.listdir('./extracted/'):
-        logging.info(subtitle_directory)
-        count = 0 
-        for subtitle in os.listdir('./extracted/{}'.format(subtitle_directory)):
-            # subs = pysrt.open('./extracted/{0}/{1}'.format(subtitle_directory, subtitle), encoding='utf-8-sig')
-            subs = webvtt.read(subtitle)
-            sorted_database = make_database(subs)
-            current_db_path = "{0}/{1}/".format(DATABASE_PATH, subtitle_directory)
-            if not os.path.isdir(current_db_path):
-                os.mkdir(DATABASE_PATH)
-                os.mkdir(current_db_path)
-            with open(current_db_path + "{}.json".format(subtitle), 'w+', encoding='utf8') as f: 
-                json.dump(sorted_database, f, ensure_ascii=False)
-            count += 1
+
 
 @click.group() 
 def mirin():
@@ -159,10 +144,10 @@ def extract_subs(extract):
                     subtitle_archive.extract("./extracted/{}".format(fn[0]))
             except rarfile.RarCannotExec as e: 
                 raise SystemExit("unrar or unar must be installed and in path to use rar files/ ")
-# @click.group(invoke_without_command=True)
+
 @mirin.command('mirin')
 @click.option('--threshold', type=int, default=100, show_default=True, help='Lower bound of usage threshold for a kanji to be included in the SRS deck.')
-@click.option('--extract', type=bool, default=True, show_default=True, help='If True, all zip files in the root directory will be extracted into the /extracted/ directory. Set it to True for the first time.')
+# @click.option('--extract', type=bool, default=True, show_default=True, help='If True, all zip files in the root directory will be extracted into the /extracted/ directory. Set it to True for the first time.')
 @click.option('--path', required=True, type=click.Path(exists=True), help='Path to the database for the desired media in this format: ./databases/media/')
 @click.option('--jlpt', type=str, default=None, help='Only add kanji which are part of this JLPT level or lower. Case insensitive. I.e: N5, N4, N3...')
 def handler(path, threshold, extract, jlpt): 
@@ -180,10 +165,6 @@ def handler(path, threshold, extract, jlpt):
 
         --threshold INTEGER  Lower bound of usage threshold for a kanji to be
                             included in the SRS deck.  [default: 100]
-
-        --extract BOOLEAN    If True, all zip files in the root directory will be
-                            extracted into the /extracted/ directory. Set it to
-                            True for the first time.  [default: False]
 
         --jlpt TEXT          Only add kanji which are part of this JLPT level or
                             lower. Case insensitive. I.e: N5, N4, N3...
