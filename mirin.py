@@ -9,6 +9,9 @@ import click
 import genanki 
 import time
 import logging
+import webvtt
+import pysubs2
+import rarfile
 from genanki.deck import Deck
 
 from dashi.search import Kanji
@@ -70,6 +73,7 @@ def make_database(subtitle_array):
     # This is subtitle level
     for sub in subtitle_array: 
         # This is the sentence level
+        print(sub.text)
         for char in sub.text:
             if Kanji.is_kanji(char):
                 if not database.get(char):
@@ -95,7 +99,7 @@ def handle_srt():
         logging.info(subtitle_directory)
         count = 0 
         for subtitle in os.listdir('./extracted/{}'.format(subtitle_directory)):
-            subs = pysrt.open('./extracted/{0}/{1}'.format(subtitle_directory, subtitle), encoding='utf-8-sig')
+            subs = pysubs2.load('./extracted/{0}/{1}'.format(subtitle_directory, subtitle), encoding='utf-8-sig')
 
             sorted_database = make_database(subs)
             current_db_path = "{0}/{1}/".format(DATABASE_PATH, subtitle_directory)
@@ -105,10 +109,30 @@ def handle_srt():
             with open(current_db_path + "{}.json".format(subtitle), 'w+', encoding='utf8') as f: 
                 json.dump(sorted_database, f, ensure_ascii=False)
             count += 1
+def handle_webvtt(): 
+    for subtitle_directory in os.listdir('./extracted/'):
+        logging.info(subtitle_directory)
+        count = 0 
+        for subtitle in os.listdir('./extracted/{}'.format(subtitle_directory)):
+            # subs = pysrt.open('./extracted/{0}/{1}'.format(subtitle_directory, subtitle), encoding='utf-8-sig')
+            subs = webvtt.read(subtitle)
+            sorted_database = make_database(subs)
+            current_db_path = "{0}/{1}/".format(DATABASE_PATH, subtitle_directory)
+            if not os.path.isdir(current_db_path):
+                os.mkdir(DATABASE_PATH)
+                os.mkdir(current_db_path)
+            with open(current_db_path + "{}.json".format(subtitle), 'w+', encoding='utf8') as f: 
+                json.dump(sorted_database, f, ensure_ascii=False)
+            count += 1
+
+@click.group() 
+def mirin():
+    pass 
 
 
+@mirin.command('extract')
+@click.option('--extract')
 def extract_subs(extract): 
-    
     """
     Args: 
         None
@@ -122,20 +146,26 @@ def extract_subs(extract):
             continue 
 
         fn = file.split('.')
-        if not fn[1] in ['zip', 'rar']:
+        if not fn[-1] in ['zip', 'rar']:
             continue 
     
         # Otherwise it's a zipfile! 
-        with zipfile.ZipFile('./{0}'.format(file), 'r') as subtitle_archive: 
-            subtitle_archive.extractall("./extracted/{}".format(fn[0]))
-
-
-@click.group(invoke_without_command=True)
-@click.option('--path', required=True, type=click.Path(exists=True), help='Path to the database for the desired media in this format: ./databases/media/')
+        if fn[-1] == 'zip':
+             with zipfile.ZipFile('./{0}'.format(file), 'r') as subtitle_archive: 
+                subtitle_archive.extractall("./extracted/{}".format(fn[0]))
+        elif fn[-1] == 'rar':
+            try: 
+                with rarfile.RarFile('./{0}'.format(file), 'r') as subtitle_archive: 
+                    subtitle_archive.extract("./extracted/{}".format(fn[0]))
+            except rarfile.RarCannotExec as e: 
+                raise SystemExit("unrar or unar must be installed and in path to use rar files/ ")
+# @click.group(invoke_without_command=True)
+@mirin.command('mirin')
 @click.option('--threshold', type=int, default=100, show_default=True, help='Lower bound of usage threshold for a kanji to be included in the SRS deck.')
-@click.option('--extract', type=bool, default=False, show_default=True, help='If True, all zip files in the root directory will be extracted into the /extracted/ directory. Set it to True for the first time.')
+@click.option('--extract', type=bool, default=True, show_default=True, help='If True, all zip files in the root directory will be extracted into the /extracted/ directory. Set it to True for the first time.')
+@click.option('--path', required=True, type=click.Path(exists=True), help='Path to the database for the desired media in this format: ./databases/media/')
 @click.option('--jlpt', type=str, default=None, help='Only add kanji which are part of this JLPT level or lower. Case insensitive. I.e: N5, N4, N3...')
-def mirin(path, threshold, extract, jlpt): 
+def handler(path, threshold, extract, jlpt): 
     """ 
     Args:
         path: database path
@@ -210,4 +240,4 @@ def mirin(path, threshold, extract, jlpt):
     
 if __name__ == "__main__":
     mirin()
-    extract_subs()
+    
