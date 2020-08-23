@@ -9,9 +9,10 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
 ## Usage
  
 1. Place the compressed subtitle archives of the show, anime, drama or movie that you want to make an SRS deck based off of into the root directory. 
-2. In your terminal of choice run the following example command: 
+2. In your terminal of choice run the following example commands: 
 ```bash
-    python mirin.py --path '/extracted/media_path/'--threshold 90
+    python mirin.py extract
+    python mirin.py mirin --path '/extracted/media_path/'--threshold 90
 ```
 *Note: for more info please check out the docs as well as running python mirin.py --help* 
 
