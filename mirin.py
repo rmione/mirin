@@ -141,16 +141,15 @@ def extract_subs(extract):
         elif fn[-1] == 'rar':
             try: 
                 with rarfile.RarFile('./{0}'.format(file), 'r') as subtitle_archive: 
-                    subtitle_archive.extract("./extracted/{}".format(fn[0]))
+                    subtitle_archive.extractall("./extracted/{}".format(fn[0]))
             except rarfile.RarCannotExec as e: 
-                raise SystemExit("unrar or unar must be installed and in path to use rar files/ ")
+                raise SystemExit("unrar or unar must be installed and in path to use rar files!")
 
 @mirin.command('mirin')
 @click.option('--threshold', type=int, default=100, show_default=True, help='Lower bound of usage threshold for a kanji to be included in the SRS deck.')
-# @click.option('--extract', type=bool, default=True, show_default=True, help='If True, all zip files in the root directory will be extracted into the /extracted/ directory. Set it to True for the first time.')
 @click.option('--path', required=True, type=click.Path(exists=True), help='Path to the database for the desired media in this format: ./databases/media/')
 @click.option('--jlpt', type=str, default=None, help='Only add kanji which are part of this JLPT level or lower. Case insensitive. I.e: N5, N4, N3...')
-def handler(path, threshold, extract, jlpt): 
+def handler(path, threshold, jlpt): 
     """ 
     Args:
         path: database path
@@ -180,8 +179,6 @@ def handler(path, threshold, extract, jlpt):
             raise SystemExit("Improper input for --jlpt flag: {}".format(jlpt))
         jlpt = int(jlpt[1]) # grab the integer level
     
-    if extract: 
-        extract_subs()
     
     for filename in os.listdir(path):
         # Individual deck level
