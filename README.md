@@ -15,6 +15,8 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
 ```
 *Note: for more info please check out the docs as well as running python mirin.py --help* 
 
+*Note: to use .rar archives for your subtitles automatically, please install unrar and have it on your PATH.*
+
 3. Wait for the process to be complete.
 4. Navigate to the /decks/ directory and see your SRS decks made to your specification.
 
