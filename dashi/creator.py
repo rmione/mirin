@@ -5,7 +5,7 @@ import os
 import random 
 
 # from dashi.search import Kanji
-
+CSS_STYLING = 1929836198347019478 # To test if this works
 if not os.path.isfile('./config.yml'): 
     MODEL_NO = random.randrange(1 << 30, 1 << 31)
     DECK_NO = random.randrange(1 << 30, 1 << 31)
@@ -15,12 +15,22 @@ if not os.path.isfile('./config.yml'):
             "deck_number": DECK_NO
         }
         yaml.safe_dump(data, stream)
+        
 else: 
     with open('./config.yml', 'r') as stream:
         data = yaml.safe_load(stream)
     MODEL_NO = data["model_number"]
     DECK_NO = data["deck_number"]
-    
+
+    if data.get('css_styling'):
+        CSS_STYLING = """      .card {
+            font-family: mincho;
+            font-size: 88px;
+            text-align: center;
+            color: black;
+            }
+            .kanji {font-family: "Kozuka Mincho Pr6N"}
+            """
 MODEL = genanki.Model(
 MODEL_NO,
 'Simple Model',
@@ -35,14 +45,7 @@ templates=[
     'afmt': '{{Meaning}}',
 } 
 ],
-css= """      .card {
-            font-family: mincho;
-            font-size: 88px;
-            text-align: center;
-            color: black;
-            }
-            .kanji {font-family: "Kozuka Mincho Pr6N"}
-            """
+css=CSS_STYLING
 
 )
 
