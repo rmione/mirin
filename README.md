@@ -21,3 +21,17 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
 3. Wait for the process to be complete.
 4. Navigate to the /decks/ directory and see your SRS decks made to your specification.
 
+## Additional Info
+You can specify your card's CSS styling in the config.yml file. You *must* use a multi-line string. 
+For example, 
+
+```yaml
+css_styling: > 
+            .card {
+            font-family: mincho;
+            font-size: 88px;
+            text-align: center;
+            color: black;
+            }
+            .kanji {font-family: "Kozuka Mincho Pr6N"}
+```
