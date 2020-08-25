@@ -6,7 +6,7 @@ class TestSearch(unittest.TestCase):
         self.assertEqual(Kanji.search_kanji(kanji).get('kanji'), 200)
     def test_bad_response(self):
         bad_string = "lksmdslaknfliakghhyla"
-        self.assertEqual(Kanji.search_kanji(bad_string), 400)
+        self.assertEqual(Kanji.search_kanji(bad_string), 404)
 
 if __name__ == "__main__":
     unittest.main()
