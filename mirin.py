@@ -154,7 +154,6 @@ def handler(path, threshold, jlpt):
     Args:
         path: database path
         threshold: lower bound on the usage thresholdfor a kanji to be included. 
-        extract: boolean flag 
         jlpt: string denoting the JLPT limit (inclusive)
     
     Click command arguments: 
