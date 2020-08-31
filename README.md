@@ -4,7 +4,7 @@ __Note:__ __This project uses the [genanki](https://github.com/kerrickstaley/gen
 _mirin_ is a command line tool built with [Click](https://github.com/pallets/click) that aids the user in doing the [Mass Immersion Approach for the Japanese language](https://massimmersionapproach.com/) by creating SRS Decks based on the kanji present in a given anime, movie, or drama. 
 
 Specifically, it makes decks of SRS cards that will allow the user to learn some of the vocab and kanji used in the program that they are watching without subtitles and in Japanese.
-
+- __
 *Note: I will be continually trying to improve this and make it more robust as far as useful stats to make your decks by, and other features*
 ## Usage
  
@@ -21,17 +21,19 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
 3. Wait for the process to be complete.
 4. Navigate to the /decks/ directory and see your SRS decks made to your specification.
 
-## Additional Info
-You can specify your card's CSS styling in the config.yml file. You *must* use a multi-line string. 
-For example, 
+## Features
+- Decks made by _mirin_ are customizable!
+  - They can be made via filtering Kanji by JLPT level, as well as usage stats.
+  - You can specify your card's CSS styling in the config.yml file. You *must* use a multi-line string. 
+    For example, 
 
-```yaml
-css_styling: > 
-            .card {
-            font-family: mincho;
-            font-size: 88px;
-            text-align: center;
-            color: black;
-            }
-            .kanji {font-family: "Kozuka Mincho Pr6N"}
-```
+        ```yaml
+        css_styling: > 
+                    .card {
+                    font-family: mincho;
+                    font-size: 88px;
+                    text-align: center;
+                    color: black;
+                    }
+                    .kanji {font-family: "Kozuka Mincho Pr6N"}
+        ```
