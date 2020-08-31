@@ -25,16 +25,20 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
 ## Features
 - Decks made by _mirin_ are customizable!
   - They can be made via filtering Kanji by JLPT level, as well as usage stats.
-  - You can specify your card's CSS styling in the config.yml file. You *must* use a multi-line string. 
-    For example, 
+  - To specify the inclusion of kanji by their JLPT level, include the *--jlpt* flag. 
+```bash 
+python mirin.py mirin --path '/extracted/media_path/'--threshold 90 --jlpt N2
+```
+- You can specify your card's CSS styling in the config.yml file. You *must* use a multi-line string. 
+  For example, 
 
-        ```yaml
-        css_styling: > 
-                    .card {
-                    font-family: mincho;
-                    font-size: 88px;
-                    text-align: center;
-                    color: black;
-                    }
-                    .kanji {font-family: "Kozuka Mincho Pr6N"}
-        ```
+```yaml
+css_styling: > 
+            .card {
+            font-family: mincho;
+            font-size: 88px;
+            text-align: center;
+            color: black;
+            }
+            .kanji {font-family: "Kozuka Mincho Pr6N"}
+```
