@@ -11,7 +11,6 @@ import time
 import logging
 import pysubs2
 import rarfile
-from genanki.deck import Deck
 
 from dashi.search import Kanji
 from dashi.creator import Deck, DECK_NO, MODEL
@@ -23,7 +22,7 @@ logger = logging.getLogger(__name__)
 fh = logging.FileHandler('mirin.log')
 fh.setLevel(logging.DEBUG)
 fh.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
-DATABASE_PATH = './databases'
+DATABASE_PATH = './databases/'
 logger.info("Deck Number " + str(DECK_NO))
 
 
@@ -43,42 +42,40 @@ def make_database(subtitle_array):
     # This is subtitle level
     for sub in subtitle_array: 
         # This is the sentence level
-        print(sub.text)
         for char in sub.text:
             if Kanji.is_kanji(char):
                 if not database.get(char):
                     # Initialize database entry and zero count 
                     database[char] = 0
                 database[char]+=1
-                # count +=1 
     return {k: v for k, v in sorted(database.items(), key=lambda item: item[1])}
 
-def handle_srt(): 
+def handle_srt(path): 
     """
     Args: 
         None
     Returns:
         None
         This does most of the legwork. 
-        Goes through the /extracted/ directory, and finds the media's subfolder.
+        Goes through the directory, 
         Then it goes through each of the individual subtitle file's contents. 
         It calls upon the make_database file and uses it to create databases for each "episode"
     """
+    media_name = path.split('/')[-1]
     
-    for subtitle_directory in os.listdir('./extracted/'):
-        logging.info(subtitle_directory)
-        count = 0 
-        for subtitle in os.listdir('./extracted/{}'.format(subtitle_directory)):
-            subs = pysubs2.load('./extracted/{0}/{1}'.format(subtitle_directory, subtitle), encoding='utf-8-sig')
 
-            sorted_database = make_database(subs)
-            current_db_path = "{0}/{1}/".format(DATABASE_PATH, subtitle_directory)
-            if not os.path.isdir(current_db_path):
-                os.mkdir(DATABASE_PATH)
-                os.mkdir(current_db_path)
-            with open(current_db_path + "{}.json".format(subtitle), 'w+', encoding='utf8') as f: 
-                json.dump(sorted_database, f, ensure_ascii=False)
-            count += 1
+    for subtitle in os.listdir(path):
+        subs = pysubs2.load(path+'/'+subtitle, encoding='utf-8-sig')
+
+        sorted_database = make_database(subs)
+        current_db_path = "{0}/{1}/".format(DATABASE_PATH, subtitle)
+        if not os.path.isdir(DATABASE_PATH):
+            os.mkdir(DATABASE_PATH)
+            os.mkdir(current_db_path)
+        # with open(current_db_path + "{}.json".format(subtitle), 'w+', encoding='utf8') as f: 
+        with open('./databases/{0}/{1}.json'.format(media_name, subtitle), 'w+', encoding='utf8') as f: 
+            json.dump(sorted_database, f, ensure_ascii=False)
+        
 
 
 @click.group() 
@@ -115,7 +112,36 @@ def extract_subs(extract):
                     subtitle_archive.extractall("./extracted/{}".format(fn[0]))
             except rarfile.RarCannotExec as e: 
                 raise SystemExit("unrar or unar must be installed and in path to use rar files!")
+def deck_maker(path, deck:Deck, jlpt, threshold):
+    """
+    Args:
+        Takes a sub path to a subdirectory of the /databases/ directory. 
+        With this it will go through each of the databases and make a deck with it. 
 
+    """
+    with open(path.path, 'r', encoding='utf-8-sig') as file: 
+        count = 0
+        kanji_database = json.load(file)
+        for kanji, frequency in kanji_database.items():
+            if (jlpt is not None) and frequency >= threshold: 
+                r = Kanji.search_kanji(kanji)
+                if (jlpt is not None and r.get('jlpt') is not None) and int(r.get('jlpt')) <= jlpt:
+                    logger.info("JLPT level is within the treshold.")
+                    # So in this case, the JLPT flag isn't None, and it is above the threshold and it's below the upper bound of JLPT.
+                    deck.add_card_helper(r)
+                    continue
+                else: 
+                    logger.info("JLPT level is NOT within the treshold.")
+                    continue
+
+                # in this case the JLPT level is None, so just add as normal since it's above the treshold.
+            elif frequency >= threshold:
+    
+                deck.add_card_helper(Kanji.search_kanji(kanji))
+            else: 
+                # Doesn't qualify by any criteria
+                    continue 
+    return deck
 @mirin.command('mirin')
 @click.option('--threshold', type=int, default=100, show_default=True, help='Lower bound of usage threshold for a kanji to be included in the SRS deck.')
 @click.option('--path', required=True, type=click.Path(exists=True), help='Path to the database for the desired media in this format: ./databases/media/')
@@ -142,7 +168,7 @@ def handler(path, threshold, jlpt, heisig):
         --help               Show this message and exit.
     """
     
-    
+    handle_srt(path)
 
     if jlpt is not None:
         
@@ -150,41 +176,22 @@ def handler(path, threshold, jlpt, heisig):
             raise SystemExit("Improper input for --jlpt flag: {}".format(jlpt))
         jlpt = int(jlpt[1]) # grab the integer level
     
-    
-    for filename in os.listdir(path):
+    count = 0
+    for file in os.scandir('./databases/'):
         # Individual deck level
-        deck = Deck(deck_id=DECK_NO, name=filename, description='Deck generated by mirin', jlpt_level=jlpt, heisig=heisig)
-        logger.info("JLPT level: " + str(deck.jlpt_level))
-        logger.info(filename)
-        
        
-        with open(path+filename, 'r', encoding='utf-8') as file: 
-            count = 0
-            kanji_database = json.load(file)
-            for kanji, frequency in kanji_database.items():
-                if (jlpt is not None) and frequency >= threshold: 
-                    
-                    r = Kanji.search_kanji(kanji)
-                    if int(r.get('jlpt')) <= jlpt:
-                        logger.info("JLPT level is within the treshold.")
-                        # So in this case, the JLPT flag isn't None, and it is above the threshold and it's below the upper bound of JLPT.
-                        deck.add_card_helper(r)
-                        continue
-                    else: 
-                        logger.info("JLPT level is NOT within the treshold.")
-                        continue
-
-                    # in this case the JLPT level is None, so just add as normal since it's above the treshold.
-                elif frequency >= threshold:
         
-                    deck.add_card_helper(Kanji.search_kanji(kanji))
-                else: 
-                    # Doesn't qualify by any criteria
-                     continue 
-        count +=1       
+        deck = Deck(deck_id=DECK_NO, name=file.name, description='Deck generated by mirin', jlpt_level=jlpt, heisig=heisig)
+        logger.info("JLPT level: " + str(deck.jlpt_level))
+        deck = deck_maker(file, deck, jlpt, threshold)
+             
         if not os.path.isdir('./decks/'):
             os.mkdir('./decks/')
-        genanki.Package(deck).write_to_file("./decks/{0}_Deck{1}.apkg".format(filename, count))
+        genanki.Package(deck).write_to_file("./decks/{0}_Deck_{1}.apkg".format(file.name, count))
+        count +=1  
+        print("DUMPED")
+       
+
 
     
 if __name__ == "__main__":
