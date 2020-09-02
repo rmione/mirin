@@ -23,7 +23,7 @@ else:
     MODEL_NO = data["model_number"]
     DECK_NO = data["deck_number"]
 
-    if data.get('css_styling'):
+    if not data.get('css_styling'):
         CSS_STYLING = """      .card {
             font-family: mincho;
             font-size: 88px;
@@ -32,6 +32,8 @@ else:
             }
             .kanji {font-family: "Kozuka Mincho Pr6N"}
             """
+    else: 
+        CSS_STYLING = data.get('css_styling')
 MODEL = genanki.Model(
 MODEL_NO,
 'Simple Model',
@@ -78,7 +80,7 @@ class Deck(Deck):
         meaning(s): {2}
         """.format(on_readings, kun_readings, meanings)
         if self.heisig and data.get('heisig_en'):
-            print(data.get('heisig_en'))
+            # print(data.get('heisig_en'))
             base += "\nHeisig keyword: {}".format(data.get('heisig_en'))
         # Uses the genanki note function and then uses the inherited add note method to add the note to the Deck.
         my_note = genanki.Note(
