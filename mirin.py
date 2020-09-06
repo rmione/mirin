@@ -36,6 +36,7 @@ LOGO = """
 
 
     """ 
+
 def make_database(subtitle_array): 
     """
     Args:
@@ -60,7 +61,7 @@ def make_database(subtitle_array):
                 database[char]+=1
     return {k: v for k, v in sorted(database.items(), key=lambda item: item[1])}
 
-def handle_srt(path): 
+def handle_srt(path, threshold) -> tuple: 
     """
     Args: 
         None
@@ -82,10 +83,12 @@ def handle_srt(path):
         if not os.path.isdir(DATABASE_PATH):
             os.mkdir(DATABASE_PATH)
             os.mkdir(current_db_path)
-        # with open(current_db_path + "{}.json".format(subtitle), 'w+', encoding='utf8') as f: 
+        
+        
         with open('./databases/{0}/{1}.json'.format(media_name, subtitle), 'w+', encoding='utf8') as f: 
             json.dump(sorted_database, f, ensure_ascii=False)
-        
+        # Database is sorted, here, so return a tuple of the highest use and the lowest use for this database. 
+        return (list(sorted_database.values())[0], list(sorted_database.values())[-1])
 
 
 @click.group() 
@@ -150,7 +153,7 @@ def handler(path, threshold, jlpt, heisig):
         --help               Show this message and exit.
     """
     # This makes all the needed databases.
-    handle_srt(path)
+    handle_srt(path, threshold)
 
     if jlpt is not None:
         if not re.search("^n[1-5]$", jlpt.lower()): 
