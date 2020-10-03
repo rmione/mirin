@@ -25,7 +25,12 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
 ## Features
 - Decks made by _mirin_ are customizable!
   - They can be made via filtering Kanji by JLPT level, as well as usage stats.
-  - To specify the inclusion of kanji by their JLPT level, include the *--jlpt* flag. 
+
+| Command Argument  | Description                                                                                     | Required                      |   |   |
+|-------------------|-------------------------------------------------------------------------------------------------|-------------------------------|---|---|
+| path PATH         | Path to the database for the desired media in this format: ./databases/media/  [required]       | :heavy_check_mark:            |   |   |
+| threshold INTEGER | Lower bound of usage threshold for a kanji to be included in the SRS deck.  [default: 100]      | :negative_squared_cross_mark: |   |   |
+| jlpt TEXT         | Only add kanji which are part of this JLPT level or lower. Case insensitive. I.e: N5, N4, N3... | :negative_squared_cross_mark: |   |   |
 ```bash 
 python mirin.py mirin --path '/extracted/media_path/'--threshold 90 --jlpt N2
 ```
