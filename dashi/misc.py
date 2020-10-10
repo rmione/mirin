@@ -17,6 +17,23 @@ LOGO = """
 
     """ 
 class Misc:
+
+    @staticmethod
+    def choose_media():
+        """
+        Little function to add some sort of menu/decision functionality. 
+        Works pretty well, but there may be a way prettier way to do this. 
+        """
+        files = list(os.scandir('./extracted/'))
+        for file in list(files):
+            print("============================================================================================================")
+            print(file.name)
+            if input("Is this the media subs you want to make a deck of? (y/n): ").lower().strip()[:1] == "y": return file.path
+            
+            else: pass
+
+            if files.index(file) == len(files)-1:
+                raise SystemExit
     @staticmethod
     def make_database(subtitle_array): 
         """
@@ -48,13 +65,10 @@ class Misc:
         Returns:
             None
             This does most of the legwork. 
-            Goes through the directory, 
-            Then it goes through each of the individual subtitle file's contents. 
+            Then it goes through the individual subtitle file's contents. 
             It calls upon the make_database file and uses it to create databases for each "episode"
         """
         media_name = path.split('/')[-2]
-        print("Medianame" + str(media_name))
-        print(path)
         
         subs = pysubs2.load(path, encoding='utf-8-sig')
 

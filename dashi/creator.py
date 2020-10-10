@@ -101,7 +101,6 @@ class Deck(Deck):
             With this it will go through each of the databases and make a deck with it. 
 
         """
-        print(path.path)
         with open(path.path, encoding='utf-8-sig') as file: 
             count = 0
             #print(path.path)
