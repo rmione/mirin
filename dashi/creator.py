@@ -101,8 +101,9 @@ class Deck(Deck):
             With this it will go through each of the databases and make a deck with it. 
 
         """
-        with open(path.path, 'r', encoding='utf-8-sig') as file: 
+        with open(path.path, encoding='utf-8-sig') as file: 
             count = 0
+            #print(path.path)
             kanji_database = json.load(file)
             for kanji, frequency in kanji_database.items():
                 if (jlpt is not None) and frequency >= threshold: 

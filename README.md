@@ -13,14 +13,16 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
 2. In your terminal of choice run the following example commands: 
 ```bash
     python mirin.py extract
-    python mirin.py mirin --path '/extracted/media_path/'--threshold 90
+    python mirin.py mirin --threshold 90
 ```
 *Note: for more info please check out the docs as well as running python mirin.py --help* 
 
 *Note: to use .rar archives for your subtitles automatically, please install unrar and have it on your PATH.*
 
-3. Wait for the process to be complete.
-4. Navigate to the /decks/ directory and see your SRS decks made to your specification.
+3. In the terminal window, the program will prompt ask you what subfolder to /extracted/ you want to make decks of. 
+4. When prompted, input "y" when it shows the desired media subfolder in /extracted/. 
+5. Wait for the process to be complete.
+6. Navigate to the /decks/ directory and see your SRS decks made to your specification.
 
 ## Features
 - Decks made by _mirin_ are customizable!
@@ -28,11 +30,10 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
 
 | Command Argument  | Description                                                                                     | Required                      |   |   |
 |-------------------|-------------------------------------------------------------------------------------------------|-------------------------------|---|---|
-| path PATH         | Path to the database for the desired media in this format: ./databases/media/  [required]       | :heavy_check_mark:            |   |   |
-| threshold INTEGER | Lower bound of usage threshold for a kanji to be included in the SRS deck.  [default: 100]      | :negative_squared_cross_mark: |   |   |
+| threshold INTEGER | Lower bound of usage threshold for a kanji to be included in the SRS deck.  [default: 100]      | :heavy_check_mark:   |   |   |
 | jlpt TEXT         | Only add kanji which are part of this JLPT level or lower. Case insensitive. I.e: N5, N4, N3... | :negative_squared_cross_mark: |   |   |
 ```bash 
-python mirin.py mirin --path '/extracted/media_path/'--threshold 90 --jlpt N2
+python mirin.py mirin --threshold 90 --jlpt N2
 ```
 - You can specify your card's CSS styling in the config.yml file. You *must* use a multi-line string. 
   For example, 

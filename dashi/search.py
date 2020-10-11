@@ -1,7 +1,6 @@
 import requests
 import json 
 import re
-import logging
 # -*- coding: utf-8 -*-
 
 BASE_URL = "https://kanjiapi.dev/v1/kanji/"

@@ -17,6 +17,23 @@ LOGO = """
 
     """ 
 class Misc:
+
+    @staticmethod
+    def choose_media():
+        """
+        Little function to add some sort of menu/decision functionality. 
+        Works pretty well, but there may be a way prettier way to do this. 
+        """
+        files = list(os.scandir('./extracted/'))
+        for file in list(files):
+            print("============================================================================================================")
+            print(file.name)
+            if input("Is this the media subs you want to make a deck of? (y/n): ").lower().strip()[:1] == "y": return file.path
+            
+            else: pass
+
+            if files.index(file) == len(files)-1:
+                raise SystemExit
     @staticmethod
     def make_database(subtitle_array): 
         """
@@ -41,31 +58,32 @@ class Misc:
                     database[char]+=1
         return {k: v for k, v in sorted(database.items(), key=lambda item: item[1])}
     @staticmethod
-    def handle_srt(path, threshold) -> tuple: 
+    def handle_srt(path, threshold, num) -> tuple: 
         """
         Args: 
             None
         Returns:
             None
             This does most of the legwork. 
-            Goes through the directory, 
-            Then it goes through each of the individual subtitle file's contents. 
+            Then it goes through the individual subtitle file's contents. 
             It calls upon the make_database file and uses it to create databases for each "episode"
         """
-        media_name = path.split('/')[-1]
+        media_name = path.split('/')[-2]
         
+        subs = pysubs2.load(path, encoding='utf-8-sig')
 
-        for subtitle in os.listdir(path):
-            subs = pysubs2.load(path+'/'+subtitle, encoding='utf-8-sig')
-
-            sorted_database = Misc.make_database(subs)
-            current_db_path = "{0}/{1}/".format(DATABASE_PATH, subtitle)
-            if not os.path.isdir(DATABASE_PATH):
-                os.mkdir(DATABASE_PATH)
-                os.mkdir(current_db_path)
-            
-            
-            with open('./databases/{0}/{1}.json'.format(media_name, subtitle), 'w+', encoding='utf8') as f: 
-                json.dump(sorted_database, f, ensure_ascii=False)
-            # Database is sorted, here, so return a tuple of the highest use and the lowest use for this database. 
-            return (list(sorted_database.values())[0], list(sorted_database.values())[-1])
+        sorted_database = Misc.make_database(subs)
+        current_db_path = "{0}{1}/".format(DATABASE_PATH, media_name)
+        
+        try:
+            # TODO: refactor this, maybe remove one or two of these, to cut the fat
+            # os.mkdir('./databases/'+media_name)
+            os.mkdir(DATABASE_PATH)
+            os.mkdir(current_db_path)
+        except FileExistsError: 
+            pass
+        
+        with open('./databases/{0}/{1}.json'.format(media_name, num), 'w+', encoding='utf8') as f: 
+            json.dump(sorted_database, f, ensure_ascii=False)
+        # Database is sorted, here, so return a tuple of the highest use and the lowest use for this database. 
+        return (list(sorted_database.values())[0], list(sorted_database.values())[-1])
