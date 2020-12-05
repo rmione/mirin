@@ -10,7 +10,6 @@ import genanki
 import time
 import logging
 import pysubs2
-import rarfile
 
 from dashi.misc import Misc, LOGO
 from dashi.creator import Deck, DECK_NO, MODEL
@@ -23,8 +22,6 @@ fh = logging.FileHandler('mirin.log')
 fh.setLevel(logging.DEBUG)
 fh.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
 logger.info("Deck Number " + str(DECK_NO))
-
-
 
 @click.group() 
 def mirin():
@@ -47,20 +44,13 @@ def extract_subs(extract):
             continue 
 
         fn = file.split('.')
-        if not fn[-1] in ['zip', 'rar']:
+        if not fn[-1] in ['zip']:
             continue 
     
-        # Otherwise it's a zipfile! 
         if fn[-1] == 'zip':
              with zipfile.ZipFile('./{0}'.format(file), 'r') as subtitle_archive: 
                 subtitle_archive.extractall("./extracted/{}".format(fn[0]))
-        elif fn[-1] == 'rar':
-            try: 
-                with rarfile.RarFile('./{0}'.format(file), 'r') as subtitle_archive: 
-                    subtitle_archive.extractall("./extracted/{}".format(fn[0]))
-            except rarfile.RarCannotExec as e: 
-                raise SystemExit("unrar or unar must be installed and in path to use rar files!")
-
+       
 
 @mirin.command('mirin')
 @click.option('--threshold', type=int, required=True, default=100, show_default=True, help='Lower bound of usage threshold for a kanji to be included in the SRS deck.')
