@@ -8,11 +8,7 @@ import logging
 from genanki import Deck
 
 from dashi.search import Kanji
-logger = logging.getLogger(__name__)
-fh = logging.FileHandler('mirin.log')
-fh.setLevel(logging.DEBUG)
-fh.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
-# from dashi.search import Kanji
+
 CSS_STYLING = None # To test if this works
 if not os.path.isfile('./config.yml'): 
     MODEL_NO = random.randrange(1 << 30, 1 << 31)
@@ -65,6 +61,7 @@ class Deck(Deck):
         super().__init__(deck_id=deck_id, name=name, description=description)
         self.jlpt_level = jlpt_level
         self.heisig = heisig
+
     def add_card_helper(self, data): 
         """
         Args:
@@ -81,19 +78,20 @@ class Deck(Deck):
         kun_readings = ', '.join(data["kun_readings"])
         
         time.sleep(2) # Waiting 2 seconds is probably fine and permissable
-        base = """
-        on reading(s): {0}
-        kun readings: {1}
-        meaning(s): {2}
-        """.format(on_readings, kun_readings, meanings)
+        base = f"""
+        on reading(s): {on_readings}
+        kun readings: {kun_readings}
+        meaning(s): {meanings}
+        """
         if self.heisig and data.get('heisig_en'):
-            # print(data.get('heisig_en'))
-            base += "\nHeisig keyword: {}".format(data.get('heisig_en'))
+            # logging.info(data.get('heisig_en'))
+            base += f"\nHeisig keyword: {data.get('heisig_en')}"
         # Uses the genanki note function and then uses the inherited add note method to add the note to the Deck.
         my_note = genanki.Note(
             model=MODEL,
             fields=[kanji, base])
         self.add_note(my_note)
+
     def _make(self, path, deck:Deck, jlpt, threshold):
         """
         Args:
@@ -103,25 +101,24 @@ class Deck(Deck):
         """
         with open(path.path, encoding='utf-8-sig') as file: 
             count = 0
-            #print(path.path)
+            #logging.info(path.path)
             kanji_database = json.load(file)
             for kanji, frequency in kanji_database.items():
                 if (jlpt is not None) and frequency >= threshold: 
-                    r = Kanji.search_kanji(kanji)
+                    r = Kanji.search_kanji(kanji).json()
                     if (jlpt is not None and r.get('jlpt') is not None) and int(r.get('jlpt')) <= jlpt:
-                        logger.info("JLPT level is within the treshold.")
+                        logging.info("JLPT level is within the treshold.")
                         # So in this case, the JLPT flag isn't None, and it is above the threshold and it's below the upper bound of JLPT.
-                        deck.add_card_helper(r)
+                        deck.add_card_helper(r.get('kanji'))
                         continue
                     else: 
-                        logger.info("JLPT level is NOT within the treshold.")
+                        logging.info("JLPT level is NOT within the treshold.")
                         continue
 
                     # in this case the JLPT level is None, so just add as normal since it's above the treshold.
                 elif frequency >= threshold:
-        
-                    deck.add_card_helper(Kanji.search_kanji(kanji))
+                    deck.add_card_helper(Kanji.search_kanji(kanji).json())
                 else: 
                     # Doesn't qualify by any criteria
-                        continue 
+                    continue 
         return deck

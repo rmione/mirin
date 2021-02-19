@@ -1,6 +1,7 @@
 import pysubs2
 import json
 import os
+import logging
 from dashi.search import Kanji
 DATABASE_PATH = './databases/'
 
@@ -26,8 +27,8 @@ class Misc:
         """
         files = list(os.scandir('./extracted/'))
         for file in list(files):
-            print("============================================================================================================")
-            print(file.name)
+            logging.info("============================================================================================================")
+            logging.info(file.name)
             if input("Is this the media subs you want to make a deck of? (y/n): ").lower().strip()[:1] == "y": return file.path
             
             else: pass
@@ -73,7 +74,7 @@ class Misc:
         subs = pysubs2.load(path, encoding='utf-8-sig')
 
         sorted_database = Misc.make_database(subs)
-        current_db_path = "{0}{1}/".format(DATABASE_PATH, media_name)
+        current_db_path = f"{DATABASE_PATH}{media_name}/"
         
         try:
             # TODO: refactor this, maybe remove one or two of these, to cut the fat
@@ -83,7 +84,7 @@ class Misc:
         except FileExistsError: 
             pass
         
-        with open('./databases/{0}/{1}.json'.format(media_name, num), 'w+', encoding='utf8') as f: 
+        with open(f'./databases/{media_name}/{num}.json', 'w+', encoding='utf8') as f: 
             json.dump(sorted_database, f, ensure_ascii=False)
         # Database is sorted, here, so return a tuple of the highest use and the lowest use for this database. 
         return (list(sorted_database.values())[0], list(sorted_database.values())[-1])
