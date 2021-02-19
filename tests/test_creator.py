@@ -29,7 +29,7 @@ class TestCreator(unittest.TestCase):
             "heisig_en": "honey"
             }
         test_deck = Deck(name="New Test Deck")
-        test_deck._add_card_helper(example_response)
+        test_deck.add_card_helper(example_response)
         print(str(test_deck.notes))
         self.assertTrue(len(test_deck.notes) >=1)
     def test_config_yml(self):

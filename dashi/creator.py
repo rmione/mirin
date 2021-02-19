@@ -65,6 +65,7 @@ class Deck(Deck):
         super().__init__(deck_id=deck_id, name=name, description=description)
         self.jlpt_level = jlpt_level
         self.heisig = heisig
+
     def add_card_helper(self, data): 
         """
         Args:
@@ -94,6 +95,7 @@ class Deck(Deck):
             model=MODEL,
             fields=[kanji, base])
         self.add_note(my_note)
+
     def _make(self, path, deck:Deck, jlpt, threshold):
         """
         Args:
@@ -107,11 +109,11 @@ class Deck(Deck):
             kanji_database = json.load(file)
             for kanji, frequency in kanji_database.items():
                 if (jlpt is not None) and frequency >= threshold: 
-                    r = Kanji.search_kanji(kanji)
+                    r = Kanji.search_kanji(kanji).json()
                     if (jlpt is not None and r.get('jlpt') is not None) and int(r.get('jlpt')) <= jlpt:
                         logger.info("JLPT level is within the treshold.")
                         # So in this case, the JLPT flag isn't None, and it is above the threshold and it's below the upper bound of JLPT.
-                        deck.add_card_helper(r)
+                        deck.add_card_helper(r.get('kanji'))
                         continue
                     else: 
                         logger.info("JLPT level is NOT within the treshold.")
@@ -119,9 +121,8 @@ class Deck(Deck):
 
                     # in this case the JLPT level is None, so just add as normal since it's above the treshold.
                 elif frequency >= threshold:
-        
-                    deck.add_card_helper(Kanji.search_kanji(kanji))
+                    deck.add_card_helper(Kanji.search_kanji(kanji).json())
                 else: 
                     # Doesn't qualify by any criteria
-                        continue 
+                    continue 
         return deck
