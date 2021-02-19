@@ -30,6 +30,7 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
 |-------------------|-------------------------------------------------------------------------------------------------|-------------------------------|
 | threshold INTEGER | Lower bound of usage threshold (how many times a kanji was used in the subtitle file) for a kanji to be included in the SRS deck.  [default: 100]      | :heavy_check_mark:   | 
 | jlpt TEXT         | Only add kanji which are part of this JLPT level or lower. Case insensitive. I.e: N5, N4, N3... | :negative_squared_cross_mark: | 
+| heisig BOOLEAN  | Specifies whether or not to include the Heisig keyword of this kanji.  | :negative_squared_cross_mark: |
 ```bash 
 python mirin.py mirin --threshold 90 --jlpt N2
 ```

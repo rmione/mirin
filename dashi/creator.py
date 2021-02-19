@@ -8,11 +8,7 @@ import logging
 from genanki import Deck
 
 from dashi.search import Kanji
-logger = logging.getLogger(__name__)
-fh = logging.FileHandler('mirin.log')
-fh.setLevel(logging.DEBUG)
-fh.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
-# from dashi.search import Kanji
+
 CSS_STYLING = None # To test if this works
 if not os.path.isfile('./config.yml'): 
     MODEL_NO = random.randrange(1 << 30, 1 << 31)
@@ -82,14 +78,14 @@ class Deck(Deck):
         kun_readings = ', '.join(data["kun_readings"])
         
         time.sleep(2) # Waiting 2 seconds is probably fine and permissable
-        base = """
-        on reading(s): {0}
-        kun readings: {1}
-        meaning(s): {2}
-        """.format(on_readings, kun_readings, meanings)
+        base = f"""
+        on reading(s): {on_readings}
+        kun readings: {kun_readings}
+        meaning(s): {meanings}
+        """
         if self.heisig and data.get('heisig_en'):
             # print(data.get('heisig_en'))
-            base += "\nHeisig keyword: {}".format(data.get('heisig_en'))
+            base += f"\nHeisig keyword: {data.get('heisig_en')}"
         # Uses the genanki note function and then uses the inherited add note method to add the note to the Deck.
         my_note = genanki.Note(
             model=MODEL,

@@ -48,8 +48,8 @@ def extract_subs(extract):
             continue 
     
         if fn[-1] == 'zip':
-             with zipfile.ZipFile('./{0}'.format(file), 'r') as subtitle_archive: 
-                subtitle_archive.extractall("./extracted/{}".format(fn[0]))
+             with zipfile.ZipFile(f'./{file}', 'r') as subtitle_archive: 
+                subtitle_archive.extractall(f"./extracted/{fn[0]}")
        
 
 @mirin.command('mirin')
@@ -79,11 +79,11 @@ def handler(threshold, jlpt, heisig):
     chosen_dir = Misc.choose_media()
 
     for i, file in enumerate(os.listdir(chosen_dir)):
-        Misc.handle_srt(path='{0}/{1}'.format(chosen_dir, file), threshold=threshold, num=i)
+        Misc.handle_srt(path=f'{chosen_dir}/{file}', threshold=threshold, num=i)
         
     if jlpt is not None:
         if not re.search("^n[1-5]$", jlpt.lower()): 
-            raise SystemExit("Improper input for --jlpt flag: {}".format(jlpt))
+            raise SystemExit(f"Improper input for --jlpt flag: {jlpt}")
         jlpt = int(jlpt[1]) # grab the integer level
     
     decks = [] 
