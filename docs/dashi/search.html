@@ -40,9 +40,9 @@ class Kanji:
         decoded = encoded.decode(&#39;utf-8&#39;)
         response = requests.get(decoded)
         # if response.status_code == 200: 
-        #     print(&#34;Successful, status code {}&#34;.format(response.status_code))
+        #     logging.info(&#34;Successful, status code {}&#34;.format(response.status_code))
         # else: 
-        #     print(&#34;Unsuccessful error code {}&#34;.format(response.status_code))
+        #     logging.info(&#34;Unsuccessful error code {}&#34;.format(response.status_code))
         
         return response.json()
 
@@ -87,9 +87,9 @@ class Kanji:
         decoded = encoded.decode(&#39;utf-8&#39;)
         response = requests.get(decoded)
         # if response.status_code == 200: 
-        #     print(&#34;Successful, status code {}&#34;.format(response.status_code))
+        #     logging.info(&#34;Successful, status code {}&#34;.format(response.status_code))
         # else: 
-        #     print(&#34;Unsuccessful error code {}&#34;.format(response.status_code))
+        #     logging.info(&#34;Unsuccessful error code {}&#34;.format(response.status_code))
         
         return response.json()
 
@@ -154,9 +154,9 @@ def search_kanji(cls, kanji):
     decoded = encoded.decode(&#39;utf-8&#39;)
     response = requests.get(decoded)
     # if response.status_code == 200: 
-    #     print(&#34;Successful, status code {}&#34;.format(response.status_code))
+    #     logging.info(&#34;Successful, status code {}&#34;.format(response.status_code))
     # else: 
-    #     print(&#34;Unsuccessful error code {}&#34;.format(response.status_code))
+    #     logging.info(&#34;Unsuccessful error code {}&#34;.format(response.status_code))
     
     return response.json()</code></pre>
 </details>

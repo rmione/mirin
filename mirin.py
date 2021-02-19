@@ -16,12 +16,16 @@ from dashi.creator import Deck, DECK_NO, MODEL
 
 if not os.path.isdir('./logs/'):
     os.mkdir('./logs/')
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
 
-logger = logging.getLogger(__name__)
-fh = logging.FileHandler('mirin.log')
-fh.setLevel(logging.DEBUG)
-fh.setFormatter(logging.Formatter('%(asctime)s %(message)s'))
-logger.info("Deck Number " + str(DECK_NO))
+logging.basicConfig(
+    level=logging.INFO, 
+    format='',
+    handlers=[console]
+    )
+
+logging.debug("Deck Number " + str(DECK_NO))
 
 @click.group() 
 def mirin():
@@ -58,10 +62,10 @@ def extract_subs(extract):
 @click.option('--heisig', type=bool, default=None, help='Specify whether or not to include the RTK/Heisig keyword for this kanji if it exists.')
 def handler(threshold, jlpt, heisig): 
     logging.info(f"Threshold: {str(threshold)} \nHeisig:{str(heisig)}")
-    print(LOGO)
+    logging.info(LOGO)
     """
     Args:
-        threshold: lower bound on the usage thresholdfor a kanji to be included. 
+        threshold: lower bound on the usage threshold for a kanji to be included. 
         jlpt: string denoting the JLPT limit (inclusive)
         heisig: boolean, specifiies whether or not to include the RTK/Heisig keyword for this kanji if it exists
     Click command arguments: 
@@ -99,16 +103,16 @@ def handler(threshold, jlpt, heisig):
             decks.append(deck) 
 
     name = str(input("\033[1;31;40m Please enter the generic name of the deck(s): "))
-    logger.info(name)
-    logger.info(f"Dumping {str(len(decks))}...")
+    logging.info(name)
+    logging.info(f"Dumping {str(len(decks))}...")
     try:
         for count, deck in enumerate(decks): 
             deck.name = "{0}_Deck_{1}".format(name, count) # Makes a generic name based on the user input.
             genanki.Package(deck).write_to_file("./decks/{}.apkg".format(deck.name))
-        logger.info("Decks successfully dumped! Exiting...")
+        logging.info("Decks successfully dumped! Exiting...")
 
     except Exception as e: 
-        logger.error(str(e))
+        logging.error(str(e))
 
 if __name__ == "__main__":
     mirin()

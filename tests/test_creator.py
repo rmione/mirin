@@ -30,7 +30,7 @@ class TestCreator():
             }
         test_deck = Deck(name="New Test Deck")
         test_deck.add_card_helper(example_response)
-        print(str(test_deck.notes))
+        logging.info(str(test_deck.notes))
         assert len(test_deck.notes) >= 1
     def test_config_yml(self):
         # Assuming config yml exists...

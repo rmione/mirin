@@ -45,12 +45,12 @@ from dashi.creator import Deck, DECK_NO, MODEL
 if not os.path.isdir(&#39;./logs/&#39;):
     os.mkdir(&#39;./logs/&#39;)
 
-logger = logging.getLogger(__name__)
+logging = logging.getlogging(__name__)
 fh = logging.FileHandler(&#39;mirin.log&#39;)
 fh.setLevel(logging.DEBUG)
 fh.setFormatter(logging.Formatter(&#39;%(asctime)s %(message)s&#39;))
 DATABASE_PATH = &#39;./databases/&#39;
-logger.info(&#34;Deck Number &#34; + str(DECK_NO))
+logging.info(&#34;Deck Number &#34; + str(DECK_NO))
 
 LOGO = &#34;&#34;&#34;
 
@@ -157,7 +157,7 @@ def extract_subs(extract):
 @click.option(&#39;--jlpt&#39;, type=str, default=None, help=&#39;Only add kanji which are part of this JLPT level or lower. Case insensitive. I.e: N5, N4, N3...&#39;)
 @click.option(&#39;--heisig&#39;, type=bool, default=None, help=&#39;Specify whether or not to include the RTK/Heisig keyword for this kanji if it exists.&#39;)
 def handler(path, threshold, jlpt, heisig): 
-    print(LOGO)
+    logging.info(LOGO)
     &#34;&#34;&#34;
     Args:
         path: database path

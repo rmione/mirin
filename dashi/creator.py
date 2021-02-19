@@ -84,7 +84,7 @@ class Deck(Deck):
         meaning(s): {meanings}
         """
         if self.heisig and data.get('heisig_en'):
-            # print(data.get('heisig_en'))
+            # logging.info(data.get('heisig_en'))
             base += f"\nHeisig keyword: {data.get('heisig_en')}"
         # Uses the genanki note function and then uses the inherited add note method to add the note to the Deck.
         my_note = genanki.Note(
@@ -101,18 +101,18 @@ class Deck(Deck):
         """
         with open(path.path, encoding='utf-8-sig') as file: 
             count = 0
-            #print(path.path)
+            #logging.info(path.path)
             kanji_database = json.load(file)
             for kanji, frequency in kanji_database.items():
                 if (jlpt is not None) and frequency >= threshold: 
                     r = Kanji.search_kanji(kanji).json()
                     if (jlpt is not None and r.get('jlpt') is not None) and int(r.get('jlpt')) <= jlpt:
-                        logger.info("JLPT level is within the treshold.")
+                        logging.info("JLPT level is within the treshold.")
                         # So in this case, the JLPT flag isn't None, and it is above the threshold and it's below the upper bound of JLPT.
                         deck.add_card_helper(r.get('kanji'))
                         continue
                     else: 
-                        logger.info("JLPT level is NOT within the treshold.")
+                        logging.info("JLPT level is NOT within the treshold.")
                         continue
 
                     # in this case the JLPT level is None, so just add as normal since it's above the treshold.

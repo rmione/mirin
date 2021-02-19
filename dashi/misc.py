@@ -1,6 +1,7 @@
 import pysubs2
 import json
 import os
+import logging
 from dashi.search import Kanji
 DATABASE_PATH = './databases/'
 
@@ -26,8 +27,8 @@ class Misc:
         """
         files = list(os.scandir('./extracted/'))
         for file in list(files):
-            print("============================================================================================================")
-            print(file.name)
+            logging.info("============================================================================================================")
+            logging.info(file.name)
             if input("Is this the media subs you want to make a deck of? (y/n): ").lower().strip()[:1] == "y": return file.path
             
             else: pass

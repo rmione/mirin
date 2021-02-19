@@ -10,9 +10,9 @@ class Kanji:
         encoded = (BASE_URL+kanji).encode('utf-8') # This looks like b'https://kanjiapi.dev/v1/kanji/\xe5\xa0\x82' etc
         decoded = encoded.decode('utf-8')
         # if response.status_code == 200: 
-        #     print("Successful, status code {}".format(response.status_code))
+        #     logging.info("Successful, status code {}".format(response.status_code))
         # else: 
-        #     print("Unsuccessful error code {}".format(response.status_code))
+        #     logging.info("Unsuccessful error code {}".format(response.status_code))
         
         return requests.get(decoded)
 
