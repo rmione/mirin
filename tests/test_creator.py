@@ -1,7 +1,7 @@
 import pytest 
 import yaml
 
-from dashi.creator import Deck
+from dashi.creator import MirinDeck
 class TestCreator(): 
     """
     Test the methods in the creator module, not much to test but here goes.
@@ -28,7 +28,7 @@ class TestCreator():
             "unicode": "871c",
             "heisig_en": "honey"
             }
-        test_deck = Deck(name="New Test Deck")
+        test_deck = MirinDeck(name="New Test Deck")
         test_deck.add_card_helper(example_response)
         logging.info(str(test_deck.notes))
         assert len(test_deck.notes) >= 1
@@ -44,5 +44,5 @@ class TestCreator():
     
     def test_dump_deck(self):
         # Create test deck to dump 
-        test_deck = Deck(name="New Test Deck")
+        test_deck = MirinDeck(name="New Test Deck")
     
