@@ -7,6 +7,6 @@ genanki==0.8.0
 idna==2.10
 pysrt==1.1.2
 pystache==0.5.4
-PyYAML==5.3.1
+PyYAML==5.4
 requests==2.24.0
 urllib3==1.25.10
