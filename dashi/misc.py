@@ -84,12 +84,11 @@ class Misc:
         """
         media_name = path.split("/")[-2]
         subs = pysubs2.load(path, encoding="utf-8-sig")
-
+        print(f"current media name: {media_name}")
         sorted_database = Misc.make_database(subs)
         current_db_path = f"{DATABASE_PATH}{media_name}/"
-
+        print(current_db_path)
         try:
-            os.mkdir(DATABASE_PATH)
             os.mkdir(current_db_path)
         except FileExistsError:
             pass
