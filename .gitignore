@@ -1,2 +1,7 @@
 *.apkg
 *.srt
+*.zip
+__pycache__/
+databases/
+extracted/
+decks/
