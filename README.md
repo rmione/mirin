@@ -29,7 +29,7 @@ When prompted, enter the name of the deck for saving, and you're done!
 | jlpt TEXT         | Only add kanji which are part of this JLPT level or lower. Case insensitive. I.e: N5, N4, N3... | :negative_squared_cross_mark: | 
 | heisig BOOLEAN  | Specifies whether or not to include the Heisig keyword of this kanji.  | :negative_squared_cross_mark: |
 ```bash 
-python mirin.py mirin --threshold 90 --jlpt N2
+python mirin.py mirin --file "./path-to-file.srt" --threshold 90 --jlpt N2 
 ```
 - You can specify your card's CSS styling in the config.yml file. You *must* use a multi-line string. 
   For example, 
