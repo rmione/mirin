@@ -4,8 +4,6 @@ import os
 import logging
 from dashi.search import Kanji
 
-DATABASE_PATH = "./databases/"
-
 LOGO = """
 
 
@@ -21,32 +19,6 @@ LOGO = """
 
 
 class Misc:
-    @staticmethod
-    def choose_media():
-        """
-        Little function to add some sort of menu/decision functionality.
-        Works pretty well, but there may be a way prettier way to do this.
-        """
-        files = list(os.scandir("./extracted/"))
-        for file in list(files):
-            logging.info(
-                "============================================================================================================"
-            )
-            logging.info(file.name)
-            if (
-                input("Is this the media subs you want to make a deck of? (y/n): ")
-                .lower()
-                .strip()[:1]
-                == "y"
-            ):
-                return file.path
-
-            else:
-                pass
-
-            if files.index(file) == len(files) - 1:
-                raise SystemExit
-
     @staticmethod
     def make_database(subtitle_array):
         """
@@ -82,18 +54,10 @@ class Misc:
             Then it goes through the individual subtitle file's contents.
             It calls upon the make_database file and uses it to create databases for each "episode"
         """
-        media_name = path.split("/")[-2]
+        media_name = path
         subs = pysubs2.load(path, encoding="utf-8-sig")
-        print(f"current media name: {media_name}")
+        logging.info(f"Current media name: {media_name}")
         sorted_database = Misc.make_database(subs)
-        current_db_path = f"{DATABASE_PATH}{media_name}/"
-        print(current_db_path)
-        try:
-            os.mkdir(current_db_path)
-        except FileExistsError:
-            pass
 
-        with open(f"./databases/{media_name}/{num}.json", "w+", encoding="utf8") as f:
-            json.dump(sorted_database, f, ensure_ascii=False)
-        # Database is sorted, here, so return a tuple of the highest use and the lowest use for this database.
-        return list(sorted_database.values())[0], list(sorted_database.values())[-1]
+        # Return the sorted dictionary
+        return sorted_database
