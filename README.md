@@ -8,19 +8,15 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
 
 *Note: I will be continually trying to improve this and make it more robust as far as useful stats to make your decks by, and other features*
 ## Usage
- 
-1. Place the compressed subtitle archives of the show, anime, drama or movie that you want to make an SRS deck based off of into the root directory. 
-2. In your terminal of choice run the following example commands: 
+
+To create a deck based off _path-to-file.srt_, including only kanji that have been used 25 times or more,
 ```bash
-    python mirin.py extract
-    python mirin.py mirin --threshold 90
+    python mirin.py mirin --threshold 25 --file "./path-to-file.srt"
 ```
+When prompted, enter the name of the deck for saving, and you're done!
 *Note: for more info please check out the docs as well as running python mirin.py --help* 
 
-1. In the terminal window, the program will prompt ask you what subfolder to /extracted/ you want to make decks of. 
-2. When prompted, input "y" when it shows the desired media subfolder in /extracted/. 
-3. Wait for the process to be complete.
-4. Navigate to the /decks/ directory and see your SRS decks made to your specification.
+
 
 ## Features
 - Decks made by _mirin_ are customizable!
@@ -28,11 +24,12 @@ Specifically, it makes decks of SRS cards that will allow the user to learn some
 
 | Command Argument  | Description                                                                                     | Required                      | 
 |-------------------|-------------------------------------------------------------------------------------------------|-------------------------------|
+| file STRING | The subtitle file you want to make an SRS deck of. [Default: None]  | :heavy_check_mark:   | 
 | threshold INTEGER | Lower bound of usage threshold (how many times a kanji was used in the subtitle file) for a kanji to be included in the SRS deck.  [default: 100]      | :heavy_check_mark:   | 
 | jlpt TEXT         | Only add kanji which are part of this JLPT level or lower. Case insensitive. I.e: N5, N4, N3... | :negative_squared_cross_mark: | 
 | heisig BOOLEAN  | Specifies whether or not to include the Heisig keyword of this kanji.  | :negative_squared_cross_mark: |
 ```bash 
-python mirin.py mirin --threshold 90 --jlpt N2
+python mirin.py mirin --file "./path-to-file.srt" --threshold 90 --jlpt N2 
 ```
 - You can specify your card's CSS styling in the config.yml file. You *must* use a multi-line string. 
   For example, 

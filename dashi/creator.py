@@ -80,6 +80,7 @@ class MirinDeck(Deck):
         kun readings: {kun_readings}
         meaning(s): {meanings}
         """
+        logging.debug(f"Adding card for {kanji}...")
         if self.heisig and data.get("heisig_en"):
             # logging.info(data.get('heisig_en'))
             base += f"\nHeisig keyword: {data.get('heisig_en')}"
@@ -87,36 +88,33 @@ class MirinDeck(Deck):
         my_note = genanki.Note(model=MODEL, fields=[kanji, base])
         self.add_note(my_note)
 
-    def _make(self, path, deck: Deck, jlpt, threshold):
+    def _make(self, kanji_database, deck: Deck, jlpt, threshold):
         """
         Args:
-            Takes a sub path to a subdirectory of the /databases/ directory.
+            Takes a dictionary, deck, and parameters to make the deck based off.
             With this it will go through each of the databases and make a deck with it.
 
         """
-        with open(path.path, encoding="utf-8-sig") as file:
-            count = 0
-            # logging.info(path.path)
-            kanji_database = json.load(file)
-            for kanji, frequency in kanji_database.items():
-                if (jlpt is not None) and frequency >= threshold:
-                    r = Kanji.search_kanji(kanji).json()
-                    if (jlpt is not None and r.get("jlpt") is not None) and int(
-                        r.get("jlpt")
-                    ) <= jlpt:
-                        logging.info("JLPT level is within the treshold.")
-                        # So in this case, the JLPT flag isn't None, and it is above the threshold and it's below the upper bound of JLPT.
-                        deck.add_card_helper(r.get("kanji"))
-                        continue
-                    else:
-                        logging.info("JLPT level is NOT within the treshold.")
-                        continue
-                    # in this case the JLPT level is None, so just add as normal since it's above the treshold.
-                elif frequency >= threshold:
-                    deck.add_card_helper(Kanji.search_kanji(kanji).json())
 
-                else:
-                    # Doesn't qualify by any criteria
+        for kanji, frequency in kanji_database.items():
+            if (jlpt is not None) and frequency >= threshold:
+                r = Kanji.search_kanji(kanji).json()
+                if (jlpt is not None and r.get("jlpt") is not None) and int(
+                    r.get("jlpt")
+                ) <= jlpt:
+                    logging.info("JLPT level is within the treshold.")
+                    # So in this case, the JLPT flag isn't None, and it is above the threshold and it's below the upper bound of JLPT.
+                    deck.add_card_helper(r.get("kanji"))
                     continue
+                else:
+                    logging.info("JLPT level is NOT within the treshold.")
+                    continue
+                # in this case the JLPT level is None, so just add as normal since it's above the treshold.
+            elif frequency >= threshold:
+                deck.add_card_helper(Kanji.search_kanji(kanji).json())
+
+            else:
+                # Doesn't qualify by any criteria
+                continue
 
         return deck
