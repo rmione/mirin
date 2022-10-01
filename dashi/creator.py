@@ -104,7 +104,7 @@ class MirinDeck(Deck):
                 ) <= jlpt:
                     logging.info("JLPT level is within the treshold.")
                     # So in this case, the JLPT flag isn't None, and it is above the threshold and it's below the upper bound of JLPT.
-                    deck.add_card_helper(r.get("kanji"))
+                    deck.add_card_helper(r)
                     continue
                 else:
                     logging.info("JLPT level is NOT within the treshold.")
